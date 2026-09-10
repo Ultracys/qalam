@@ -4,7 +4,9 @@ export const distance = (a: Pick<BrushPoint, 'x' | 'y'>, b: Pick<BrushPoint, 'x'
   Math.hypot(b.x - a.x, b.y - a.y);
 
 export function nibEdges(point: BrushPoint, width: number, angle: number) {
-  const radians = (angle * Math.PI) / 180;
+  // Canvas grows downward on the Y axis. Negating the UI angle keeps the
+  // qalam's chisel aligned with the conventional Arabic calligraphy bevel.
+  const radians = (-angle * Math.PI) / 180;
   const half = width / 2;
   const vx = Math.cos(radians) * half;
   const vy = Math.sin(radians) * half;

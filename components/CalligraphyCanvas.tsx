@@ -10,8 +10,8 @@ import { pointFromPointer } from '@/lib/pointerUtils';
 import { interpolatePoints, smoothPoint } from '@/lib/strokeSmoothing';
 import { downloadText, strokesToSvg } from '@/lib/svgExporter';
 import { canvasStore, useCanvasStore } from '@/store/canvasStore';
-import type { BrushPoint, Stroke } from '@/types/stroke';
-import { drawPracticeGuides } from '@/components/PracticeGuides';
+import type { Stroke } from '@/types/stroke';
+import { drawPracticeGuides, drawTrainingTemplate } from '@/components/PracticeGuides';
 import { Toolbar } from '@/components/Toolbar';
 import { BrushSettings } from '@/components/BrushSettings';
 import { useQalamWebMcp } from '@/hooks/useQalamWebMcp';
@@ -30,6 +30,7 @@ export function CalligraphyCanvas() {
   const lastPinchDistance = useRef(0);
   const mousePan = useRef<{ id: number; x: number; y: number } | null>(null);
   const [zoom, setZoom] = useState(1);
+  const [isDrawing, setIsDrawing] = useState(false);
   const [debugData, setDebugData] = useState<DebugData>({ pressure: 0, tiltX: 0, tiltY: 0, velocity: 0, pointerType: '—' });
   const [traceUrl, setTraceUrl] = useState<string | null>(null);
   const [traceOpacity, setTraceOpacity] = useState(34);
@@ -51,7 +52,12 @@ export function CalligraphyCanvas() {
     ctx.fillRect(0, 0, width, height);
     const view = transform.current;
     ctx.setTransform(dpr * view.zoom, 0, 0, dpr * view.zoom, dpr * view.x, dpr * view.y);
-    if (state.guides) drawPracticeGuides(ctx, rect.width / view.zoom, rect.height / view.zoom, state.brush.nibWidth, state.practice, state.grid);
+    if (state.guides) drawPracticeGuides(ctx, rect.width / view.zoom, rect.height / view.zoom, state.brush.nibWidth, state.practice, state.grid, state.mode === 'training' ? state.templateSize : undefined);
+    if (state.mode === 'training') {
+      const fontStyle = state.practice === 'ruqah' ? 'ruqah' : state.practice === 'diwani' ? 'diwani' : state.practice === 'kufi' ? 'kufi' : 'naskh';
+      const fontFamily = getComputedStyle(document.body).getPropertyValue(`--font-training-${fontStyle}`).trim();
+      drawTrainingTemplate(ctx, rect.width / view.zoom, rect.height / view.zoom, state.trainingText, fontFamily, state.templateSize, state.templateOpacity);
+    }
     if (traceImage.current) {
       const image = traceImage.current;
       const maxWidth = rect.width * 0.72;
@@ -68,6 +74,7 @@ export function CalligraphyCanvas() {
   }, [render]);
 
   useEffect(() => { canvasStore.hydrate(); }, []);
+  useEffect(() => { void document.fonts.ready.then(queueRender); }, [queueRender]);
   useEffect(() => { document.documentElement.classList.toggle('dark', state.darkMode); queueRender(); }, [state.darkMode, queueRender]);
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -103,6 +110,7 @@ export function CalligraphyCanvas() {
     event.currentTarget.setPointerCapture(event.pointerId);
     if (state.tool === 'eraser') { eraseAt(point); return; }
     activePen.current = event.pointerId;
+    setIsDrawing(true);
     const first = pointFromPointer(event, point.x, point.y);
     activeStroke.current = { id: crypto.randomUUID(), tool: 'qalam', points: [first], color: state.brush.color, nibWidth: state.brush.nibWidth, nibAngle: state.brush.nibAngle, pressureEnabled: state.brush.pressureEnabled, pressureSensitivity: state.brush.pressureSensitivity, smoothing: state.brush.smoothing };
     setDebugData({ pressure: first.pressure, tiltX: first.tiltX, tiltY: first.tiltY, velocity: 0, pointerType: event.pointerType });
@@ -152,6 +160,7 @@ export function CalligraphyCanvas() {
     if (activePen.current !== event.pointerId) return;
     if (activeStroke.current?.points.length) canvasStore.addStroke(activeStroke.current);
     activeStroke.current = null; activePen.current = null; queueRender();
+    setIsDrawing(false);
   };
 
   const changeZoom = (delta: number) => { const next = Math.max(0.45, Math.min(4, transform.current.zoom + delta)); transform.current.zoom = next; setZoom(next); queueRender(); };
@@ -177,9 +186,9 @@ export function CalligraphyCanvas() {
         <BrushSettings />
         <div className="canvas-stage">
           <canvas ref={canvasRef} aria-label="لوحة الكتابة بالخط العربي" onContextMenu={(event) => event.preventDefault()} onPointerDown={handlePointerDown} onPointerMove={handlePointerMove} onPointerUp={finishPointer} onPointerCancel={finishPointer} />
-          <div className="canvas-status"><span className="live-dot" />{activePen.current !== null ? 'القلم متصل' : 'جاهز للكتابة'}<i />{Math.round(zoom * 100)}%</div>
+          <div className="canvas-status"><span className="live-dot" />{isDrawing ? 'القلم متصل' : state.mode === 'training' ? 'جاهز للتدريب' : 'جاهز للكتابة'}<i />{Math.round(zoom * 100)}%</div>
           <div className="trace-panel">
-            {!traceUrl ? <label className="trace-upload"><ImagePlus />إضافة نموذج<input type="file" accept="image/*" onChange={(event) => uploadTrace(event.target.files?.[0])} /></label> : <><Button size="icon-sm" variant="ghost" aria-label="حذف النموذج" onClick={() => { traceImage.current = null; setTraceUrl(null); queueRender(); }}><X /></Button><Minus /><Slider aria-label="شفافية النموذج" min={0} max={100} value={[traceOpacity]} onValueChange={(value) => setTraceOpacity(value[0])} /><Plus /><span>{traceOpacity}%</span></>}
+            {!traceUrl ? <label className="trace-upload"><ImagePlus />إضافة نموذج<input type="file" accept="image/*" onChange={(event) => uploadTrace(event.target.files?.[0])} /></label> : <><Button size="icon-sm" variant="ghost" aria-label="حذف النموذج" onClick={() => { traceImage.current = null; setTraceUrl(null); queueRender(); }}><X /></Button><Minus /><Slider aria-label="شفافية النموذج" min={0} max={100} value={traceOpacity} onValueChange={(value) => setTraceOpacity(typeof value === 'number' ? value : value[0])} /><Plus /><span>{traceOpacity}%</span></>}
           </div>
           {state.debug && <output className="debug-panel"><b>بيانات القلم</b><span>Pressure <strong>{debugData.pressure.toFixed(2)}</strong></span><span>Tilt X <strong>{debugData.tiltX}°</strong></span><span>Tilt Y <strong>{debugData.tiltY}°</strong></span><span>Velocity <strong>{debugData.velocity.toFixed(2)}</strong></span><span>Pointer <strong>{debugData.pointerType}</strong></span><span>Nib <strong>{state.brush.nibAngle}°</strong></span></output>}
         </div>

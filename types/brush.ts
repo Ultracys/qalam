@@ -1,5 +1,6 @@
 export type StabilizerLevel = 'off' | 'low' | 'medium' | 'high';
-export type PracticeStyle = 'none' | 'ruqah' | 'diwani' | 'thuluth' | 'naskh';
+export type CanvasMode = 'free' | 'training';
+export type PracticeStyle = 'none' | 'ruqah' | 'diwani' | 'thuluth' | 'naskh' | 'kufi';
 
 export type BrushSettings = {
   color: string;

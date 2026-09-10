@@ -1,7 +1,8 @@
 'use client';
 
 import Link from 'next/link';
-import { Brush, Bug, Eraser, Grid3X3, Hand, Moon, Redo2, RotateCcw, Sun, Trash2, Undo2, ZoomIn, ZoomOut } from 'lucide-react';
+import Image from 'next/image';
+import { Brush, Bug, Eraser, Grid3X3, Hand, Moon, Redo2, Sun, Trash2, Undo2, ZoomIn, ZoomOut } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { canvasStore, useCanvasStore } from '@/store/canvasStore';
 import { ExportDialog } from '@/components/ExportDialog';
@@ -11,7 +12,7 @@ export function Toolbar({ zoom, onZoom, onPng, onSvg }: { zoom: number; onZoom: 
   const toolButton = (tool: 'qalam' | 'eraser' | 'pan', label: string, icon: React.ReactNode) => <Button aria-label={label} title={label} variant={state.tool === tool ? 'default' : 'ghost'} className="icon-tool" onClick={() => canvasStore.set({ tool })}>{icon}</Button>;
   return (
     <header className="toolbar">
-      <div className="brand"><span className="brand-mark">ق</span><div><strong>Qalam Canvas</strong><small>محترف الخط العربي</small></div></div>
+      <div className="brand"><Image className="brand-logo" src="/qalam-logo.svg" width={42} height={42} priority alt="شعار قلم" /><div><strong>Qalam Canvas</strong><small>محترف الخط العربي</small></div></div>
       <div className="tool-group">
         {toolButton('qalam', 'قلم القصب', <Brush />)}
         {toolButton('eraser', 'الممحاة', <Eraser />)}

@@ -1,10 +1,11 @@
 import type { Metadata } from 'next';
-import { Noto_Kufi_Arabic, Geist_Mono } from 'next/font/google';
+import { Amiri, Aref_Ruqaa, Geist_Mono, IBM_Plex_Sans_Arabic, Katibeh, Reem_Kufi } from 'next/font/google';
 import './globals.css';
 
-const arabicSans = Noto_Kufi_Arabic({
+const arabicSans = IBM_Plex_Sans_Arabic({
   variable: '--font-arabic-sans',
-  subsets: ['arabic'],
+  subsets: ['arabic', 'latin'],
+  weight: ['400', '500', '600', '700'],
 });
 
 const geistMono = Geist_Mono({
@@ -12,9 +13,15 @@ const geistMono = Geist_Mono({
   subsets: ['latin'],
 });
 
+const naskhFont = Amiri({ variable: '--font-training-naskh', subsets: ['arabic'], weight: ['400'] });
+const ruqahFont = Aref_Ruqaa({ variable: '--font-training-ruqah', subsets: ['arabic'], weight: ['400'] });
+const diwaniFont = Katibeh({ variable: '--font-training-diwani', subsets: ['arabic'], weight: ['400'] });
+const kufiFont = Reem_Kufi({ variable: '--font-training-kufi', subsets: ['arabic'] });
+
 export const metadata: Metadata = {
   title: 'Qalam Canvas | لوحة الخط العربي',
   description: 'مساحة رقمية للكتابة والتدرب على الخط العربي بقلم قصب يحاكي الضغط والميل.',
+  icons: { icon: '/favicon.svg' },
 };
 
 export default function RootLayout({
@@ -23,10 +30,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ar" dir="rtl">
-      <body
-        className={`${arabicSans.variable} ${geistMono.variable} antialiased`}
-      >
+    <html lang="ar" dir="rtl" className={`${arabicSans.variable} ${geistMono.variable} ${naskhFont.variable} ${ruqahFont.variable} ${diwaniFont.variable} ${kufiFont.variable}`}>
+      <body className="antialiased">
         {children}
       </body>
     </html>
