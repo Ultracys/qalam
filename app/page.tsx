@@ -5,7 +5,7 @@ const structuredData = {
   '@type': 'WebApplication',
   name: 'قلم',
   alternateName: 'Qalam Canvas',
-  url: 'https://qalam-canvas.vercel.app/',
+  url: 'https://qalam.dayell.com/',
   description:
     'لوحة مجانية للتدرب على الخط العربي بقلم قصب رقمي يحاكي الضغط والميل.',
   applicationCategory: 'EducationalApplication',

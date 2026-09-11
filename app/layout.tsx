@@ -9,7 +9,7 @@ import {
 } from 'next/font/google';
 import './globals.css';
 
-const siteUrl = 'https://qalam-canvas.vercel.app';
+const siteUrl = 'https://qalam.dayell.com';
 
 const arabicSans = IBM_Plex_Sans_Arabic({
   variable: '--font-arabic-sans',
