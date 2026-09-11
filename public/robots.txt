@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /diagnostics
+
+Sitemap: https://qalam-canvas.vercel.app/sitemap.xml
+Host: qalam-canvas.vercel.app

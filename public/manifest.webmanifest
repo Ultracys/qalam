@@ -1,0 +1,19 @@
+{
+  "name": "قلم – لوحة التدريب على الخط العربي",
+  "short_name": "قلم",
+  "description": "لوحة مجانية للتدرب على الخط العربي بقلم قصب رقمي.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#fbfaf5",
+  "theme_color": "#176b5a",
+  "lang": "ar",
+  "dir": "rtl",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}
