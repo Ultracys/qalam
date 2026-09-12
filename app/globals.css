@@ -1094,6 +1094,85 @@ input {
   .adventure-scroll { scroll-behavior: auto; }
   .map-node { transition: none; animation: none !important; }
 }
+
+/* Treasure-map character without the previous heavy rendering cost */
+.treasure-route {
+  background-color: #ead9b3;
+  background-image:
+    radial-gradient(circle at 18% 12%, #8a642013 0 2px, transparent 3px),
+    radial-gradient(circle at 78% 72%, #8a642010 0 1px, transparent 2px);
+  background-size: 46px 46px, 31px 31px;
+}
+.adventure-region {
+  border: 2px solid #76562d42;
+  border-radius: 22px 12px 24px 14px;
+  box-shadow: 0 4px 0 #7b5e3130;
+}
+.region-1 { background: linear-gradient(160deg, #c3e1c9 0%, #dce4b8 100%); }
+.region-2 { background: linear-gradient(160deg, #f1c779 0%, #e4a85d 100%); }
+.region-3 { background: linear-gradient(160deg, #c8c2dd 0%, #9ea6c7 100%); }
+.region-4 { background: linear-gradient(160deg, #c8dfe0 0%, #9dc4bc 100%); }
+.region-heading > span {
+  background: #fff6dfa8;
+  border: 1px solid #6f522b2b;
+}
+.region-scenery {
+  padding: 7px 9px;
+  border-radius: 12px;
+  background: #fff8e98c;
+}
+.curriculum-path {
+  position: relative;
+  padding-block: 30px 24px;
+  border: 1px dashed #765c3540;
+  border-radius: 18px;
+  background: #fff8e52e;
+}
+.curriculum-path .path-stop {
+  position: relative;
+  padding-inline: 5px;
+}
+.curriculum-path .path-stop::after {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  top: 24px;
+  left: -56%;
+  width: 112%;
+  border-top: 3px dashed #755c37a0;
+  transform: rotate(-5deg);
+}
+.curriculum-path .path-stop:nth-child(4n)::after { content: none; }
+.curriculum-path .path-stop:nth-child(4n + 2) { transform: translateY(13px); }
+.curriculum-path .path-stop:nth-child(4n + 3) { transform: translateY(-8px); }
+.curriculum-path .map-node {
+  width: 54px;
+  height: 54px;
+  border-width: 4px;
+  box-shadow: 0 4px 0 #4d3923, 0 7px 12px #3f2d1729;
+}
+.curriculum-path .map-node.complete { box-shadow: 0 4px 0 #0c493d, 0 7px 12px #164f4024; }
+.curriculum-path .map-node.active {
+  box-shadow: 0 4px 0 #4d3923, 0 0 0 7px #e4a72b38;
+}
+.curriculum-path .stop-label {
+  border: 1px solid #73552e30;
+  border-radius: 12px 8px 12px 8px;
+  background: #fffaf0e8;
+  box-shadow: 0 3px 0 #755b3220;
+}
+.treasure-finish {
+  margin-block: 4px 12px;
+  transform: rotate(-1deg);
+  box-shadow: 0 4px 0 #a76c16, 0 10px 20px #6d48182b;
+}
+@media (max-width: 760px) {
+  .curriculum-path .path-stop::after { left: -55%; width: 110%; }
+  .curriculum-path .path-stop:nth-child(4n)::after { content: ''; }
+  .curriculum-path .path-stop:nth-child(2n)::after { content: none; }
+  .curriculum-path .path-stop:nth-child(4n + 2),
+  .curriculum-path .path-stop:nth-child(4n + 3) { transform: none; }
+}
 .reset-brush-button {
   width: 100%;
   flex: none;
