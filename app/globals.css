@@ -1024,7 +1024,7 @@ input {
 }
 .treasure-finish strong { font-size: 0.72rem; }
 .treasure-finish span { font-size: 0.6rem; color: #704a13; }
-.adventure-region:has(.curriculum-path) { min-height: auto; }
+.adventure-region { min-height: auto; }
 .curriculum-path {
   height: auto;
   min-height: 345px;
@@ -1089,6 +1089,41 @@ input {
   .treasure-route { padding: 16px; }
   .curriculum-path { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .region-story { font-size: 0.74rem; }
+}
+
+/* Keep the long journey on its own cheap paint layer while scrolling. */
+[data-slot='dialog-overlay'] {
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+  background: #17140d52 !important;
+}
+.adventure-map-dialog {
+  box-shadow: 0 14px 36px #0b1d1638;
+}
+.adventure-scroll {
+  scroll-behavior: auto;
+  contain: strict;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  -webkit-overflow-scrolling: touch;
+}
+.treasure-route {
+  contain: layout paint style;
+}
+.adventure-region {
+  content-visibility: auto;
+  contain: layout paint style;
+  contain-intrinsic-block-size: 1120px;
+  box-shadow: 0 2px 0 #7b5e3126;
+}
+.curriculum-path .map-node,
+.curriculum-path .map-node.complete,
+.curriculum-path .map-node.active,
+.curriculum-path .stop-label,
+.treasure-finish {
+  transition: none;
+  animation: none !important;
+  filter: none;
 }
 @media (prefers-reduced-motion: reduce) {
   .adventure-scroll { scroll-behavior: auto; }
