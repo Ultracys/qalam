@@ -85,9 +85,11 @@ export function CalligraphyCanvas() {
         state.brush.nibWidth,
         state.practice,
         state.grid,
-        state.mode === 'training' ? state.templateSize : undefined,
+        state.mode === 'training' || state.mode === 'custom-training'
+          ? state.templateSize
+          : undefined,
       );
-    if (state.mode === 'training') {
+    if (state.mode === 'training' || state.mode === 'custom-training') {
       const fontStyle =
         state.practice === 'ruqah'
           ? 'ruqah'
@@ -107,6 +109,7 @@ export function CalligraphyCanvas() {
         fontFamily,
         state.templateSize,
         state.templateOpacity,
+        state.mode === 'custom-training' ? state.trainingRepeat : 1,
       );
     }
     if (traceImage.current) {
@@ -501,6 +504,8 @@ export function CalligraphyCanvas() {
               ? 'القلم متصل'
               : state.mode === 'training'
                 ? 'جاهز للتدريب'
+                : state.mode === 'custom-training'
+                  ? 'جاهز لتدريبك الحر'
                 : 'جاهز للكتابة'}
             <i />
             {Math.round(zoom * 100)}%

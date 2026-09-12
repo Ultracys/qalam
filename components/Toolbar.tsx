@@ -6,11 +6,14 @@ import {
   BookOpen,
   Brush,
   Bug,
+  Compass,
   Eraser,
   Grid3X3,
   Hand,
   LocateFixed,
   Moon,
+  NotebookPen,
+  PenLine,
   Redo2,
   Sun,
   Trash2,
@@ -71,6 +74,11 @@ export function Toolbar({
           <small>لوحة التدريب على الخط العربي</small>
         </div>
       </div>
+      <nav className="top-mode-selector" aria-label="اختر طور الكتابة">
+        <Button type="button" variant={state.mode === 'free' ? 'default' : 'ghost'} onClick={() => canvasStore.set({ mode: 'free' })}><PenLine /><span>الحر</span></Button>
+        <Button type="button" variant={state.mode === 'training' ? 'default' : 'ghost'} onClick={() => canvasStore.set({ mode: 'training' })}><Compass /><span>الرحلة</span></Button>
+        <Button type="button" variant={state.mode === 'custom-training' ? 'default' : 'ghost'} onClick={() => canvasStore.set({ mode: 'custom-training' })}><NotebookPen /><span>تدريب حر</span></Button>
+      </nav>
       <div className="tool-group">
         {toolButton('qalam', 'قلم القصب', <Brush />)}
         {toolButton('eraser', 'الممحاة', <Eraser />)}

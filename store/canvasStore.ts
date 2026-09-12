@@ -18,6 +18,7 @@ export type CanvasState = {
   trainingText: string;
   templateOpacity: number;
   templateSize: number;
+  trainingRepeat: number;
   activeLessonId: string;
   completedLessons: Record<string, number>;
   trainingXp: number;
@@ -36,6 +37,7 @@ const defaults: CanvasState = {
   trainingText: 'قلم',
   templateOpacity: 18,
   templateSize: 104,
+  trainingRepeat: 3,
   activeLessonId: 'c1-l1',
   completedLessons: {},
   trainingXp: 0,

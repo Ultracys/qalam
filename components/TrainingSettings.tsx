@@ -1,20 +1,13 @@
 'use client';
 
 import { useState } from 'react';
-import { BookOpen, Castle, Check, ChevronLeft, Flag, GraduationCap, LockKeyhole, Map, Mountain, Palmtree, PenLine, Sparkles, Star, Store, Trophy } from 'lucide-react';
+import { ArrowRight, BookOpen, Castle, Check, ChevronLeft, Flag, LockKeyhole, Map, Mountain, Palmtree, Sparkles, Star, Store, Trophy } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Slider } from '@/components/ui/slider';
+import { Textarea } from '@/components/ui/textarea';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { canvasStore, useCanvasStore } from '@/store/canvasStore';
 import { getLesson, getNextLesson, trainingChapters, trainingLessons } from '@/lib/trainingJourney';
-
-export function ModeSelector() {
-  const { mode } = useCanvasStore();
-  return <div className="mode-selector" aria-label="طور اللوحة">
-    <Button type="button" variant={mode === 'free' ? 'default' : 'ghost'} onClick={() => canvasStore.set({ mode: 'free' })}><PenLine />الحر</Button>
-    <Button type="button" variant={mode === 'training' ? 'default' : 'ghost'} onClick={() => canvasStore.set({ mode: 'training' })}><GraduationCap />الرحلة</Button>
-  </div>;
-}
 
 function Stars({ count }: { count: number }) {
   return <span className="lesson-stars" aria-label={`${count} من 3 نجوم`}>
@@ -24,7 +17,8 @@ function Stars({ count }: { count: number }) {
 
 export function TrainingSettings() {
   const state = useCanvasStore();
-  const [showMap, setShowMap] = useState(false);
+  const [showMap, setShowMap] = useState(true);
+  const [briefLessonId, setBriefLessonId] = useState<string | null>(null);
   const [result, setResult] = useState<{ stars: number; message: string } | null>(null);
   const active = getLesson(state.activeLessonId);
   const activeIndex = trainingLessons.findIndex((item) => item.id === active.id);
@@ -35,9 +29,14 @@ export function TrainingSettings() {
     const lessonIndex = trainingLessons.findIndex((item) => item.id === lessonId);
     const unlocked = lessonIndex === 0 || Boolean(state.completedLessons[trainingLessons[lessonIndex - 1].id]);
     if (!unlocked) return;
+    setBriefLessonId(lessonId);
+  };
+
+  const startLesson = (lessonId: string) => {
     const lesson = getLesson(lessonId);
     canvasStore.set({ activeLessonId: lesson.id, trainingText: lesson.text, practice: lesson.style, templateOpacity: lesson.chapter === 4 ? 11 : 18, strokes: [], redoStack: [] });
     setResult(null);
+    setBriefLessonId(null);
     setShowMap(false);
   };
 
@@ -79,13 +78,27 @@ export function TrainingSettings() {
 
     {result ? <output className="lesson-result">
       <Trophy /><div><Stars count={result.stars} /><p>{result.message}</p></div>
-      {nextLesson && <Button size="sm" onClick={() => selectLesson(nextLesson.id)}>التالي <ChevronLeft /></Button>}
+      {nextLesson && <Button size="sm" onClick={() => { setBriefLessonId(nextLesson.id); setShowMap(true); }}>التالي <ChevronLeft /></Button>}
     </output> : <Button className="finish-lesson" disabled={!state.strokes.length} onClick={finishLesson}><Check /> {isCompleted ? 'قيّم المحاولة مجددًا' : 'أنهيت المهمة'}</Button>}
 
     <Button type="button" variant="outline" className="map-toggle" onClick={() => setShowMap(true)}><Map /> افتح خريطة المغامرة</Button>
 
     <Dialog open={showMap} onOpenChange={setShowMap}>
-      <DialogContent className="adventure-map-dialog">
+      <DialogContent className={`adventure-map-dialog ${briefLessonId ? 'showing-brief' : ''}`}>
+        {briefLessonId ? (() => {
+          const brief = getLesson(briefLessonId);
+          return <div className="lesson-briefing">
+            <button type="button" className="brief-back" onClick={() => setBriefLessonId(null)}><ArrowRight /> العودة للخريطة</button>
+            <span className="brief-chapter">الفصل {brief.chapter} · المرحلة {brief.order}</span>
+            <div className="brief-icon"><Flag /></div>
+            <h2>{brief.title}</h2>
+            <p className="brief-story">{brief.story}</p>
+            <div className="brief-objective"><span>هدف المرحلة</span><strong>{brief.objective}</strong></div>
+            <div className="brief-example"><span>ستتدرب على</span><b>{brief.text}</b></div>
+            <div className="brief-meta"><span>{brief.xp} XP</span><span>{brief.minStrokes} ضربات مستهدفة</span></div>
+            <Button size="lg" className="start-adventure-button" onClick={() => startLesson(brief.id)}>ابدأ المرحلة <ChevronLeft /></Button>
+          </div>;
+        })() : <>
         <DialogHeader className="adventure-map-header">
           <div><span className="map-kicker"><Map /> خريطة كنز الخطاط</span><DialogTitle>رحلتك من أول نقطة إلى الإجازة</DialogTitle></div>
           <DialogDescription>اتبع المسار، أنجز التحديات، وافتح بيئة جديدة في كل فصل.</DialogDescription>
@@ -121,7 +134,23 @@ export function TrainingSettings() {
             <div className="treasure-finish"><Trophy /><div><strong>إجازة الخطاط</strong><span>الكنز الأخير</span></div></div>
           </div>
         </div>
+        </>}
       </DialogContent>
     </Dialog>
+  </section>;
+}
+
+export function CustomTrainingSettings() {
+  const { trainingText, trainingRepeat, templateOpacity, templateSize } = useCanvasStore();
+  const sliderValue = (value: number | readonly number[]) => typeof value === 'number' ? value : value[0];
+  return <section className="custom-training-settings" aria-label="إعدادات التدريب الحر">
+    <div className="custom-training-heading"><div><span>تدريبك الحر</span><small>اكتب أي حرف أو كلمة أو جملة</small></div><Sparkles /></div>
+    <Textarea aria-label="النص المراد التدرب عليه" dir="rtl" maxLength={80} rows={3} placeholder="مثال: من جدّ وجد" value={trainingText} onChange={(event) => canvasStore.set({ trainingText: event.target.value })} />
+    <div className="repeat-picker" aria-label="عدد مرات التكرار">
+      <span>التكرار في كل سطر</span>
+      <div>{[1, 2, 3, 4, 5].map((count) => <button key={count} type="button" className={trainingRepeat === count ? 'active' : ''} onClick={() => canvasStore.set({ trainingRepeat: count })}>{count}</button>)}</div>
+    </div>
+    <div className="template-control"><span><span>حجم النموذج</span><b>{templateSize}px</b></span><Slider aria-label="حجم نموذج التدريب" min={48} max={180} value={templateSize} onValueChange={(value) => canvasStore.set({ templateSize: sliderValue(value) })} /></div>
+    <div className="template-control"><span><span>وضوح النموذج</span><b>{templateOpacity}%</b></span><Slider aria-label="وضوح نموذج التدريب" min={5} max={45} value={templateOpacity} onValueChange={(value) => canvasStore.set({ templateOpacity: sliderValue(value) })} /></div>
   </section>;
 }

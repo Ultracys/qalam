@@ -36,6 +36,7 @@ export function drawTrainingTemplate(
   fontFamily: string,
   fontSize: number,
   opacity: number,
+  repeat = 1,
 ) {
   const sample = text.trim();
   if (!sample) return;
@@ -47,7 +48,8 @@ export function drawTrainingTemplate(
   ctx.font = `${fontSize}px ${fontFamily || 'serif'}`;
   ctx.fillStyle = `rgba(23, 107, 90, ${Math.max(0.05, opacity / 100)})`;
   for (let y = baselineGap; y < height; y += baselineGap) {
-    ctx.fillText(sample, width / 2, y, Math.max(120, width - 96));
+    const repeatedSample = Array.from({ length: Math.max(1, repeat) }, () => sample).join('     ');
+    ctx.fillText(repeatedSample, width / 2, y, Math.max(120, width - 96));
   }
   ctx.restore();
 }

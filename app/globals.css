@@ -89,7 +89,7 @@ input {
 .toolbar {
   z-index: 20;
   display: grid;
-  grid-template-columns: minmax(180px, 1fr) auto minmax(250px, 1fr);
+  grid-template-columns: minmax(150px, 0.8fr) auto auto minmax(220px, 0.8fr);
   align-items: center;
   gap: 14px;
   padding: 10px 16px;
@@ -151,6 +151,131 @@ input {
 .toolbar > .tool-group:last-child {
   justify-self: end;
 }
+
+/* Three-mode navigation and guided lesson briefing */
+.custom-training-settings {
+  display: grid;
+  gap: 14px;
+  padding: 14px;
+  border: 1px solid color-mix(in srgb, var(--primary) 28%, var(--border));
+  border-radius: 13px;
+  background: color-mix(in srgb, var(--primary) 5%, var(--card));
+}
+.custom-training-heading { display: flex; align-items: center; justify-content: space-between; }
+.custom-training-heading > div { display: grid; gap: 2px; }
+.custom-training-heading span { font-size: 0.84rem; font-weight: 800; }
+.custom-training-heading small { color: var(--muted-foreground); font-size: 0.68rem; }
+.custom-training-heading svg { width: 18px; color: #9d742e; }
+.custom-training-settings textarea {
+  min-height: 78px;
+  resize: none;
+  background: var(--card);
+  font-size: 1rem;
+  line-height: 1.7;
+}
+.repeat-picker { display: grid; gap: 8px; color: var(--muted-foreground); font-size: 0.72rem; }
+.repeat-picker > div { display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; }
+.repeat-picker button {
+  height: 31px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--card);
+  color: var(--foreground);
+  cursor: pointer;
+  font: 700 0.72rem var(--font-geist-mono);
+}
+.repeat-picker button.active { border-color: var(--primary); background: var(--primary); color: var(--primary-foreground); }
+.adventure-map-dialog.showing-brief {
+  width: min(560px, calc(100vw - 32px));
+  height: auto;
+  min-height: 580px;
+  background: linear-gradient(155deg, #fff9e8, #e8d09b) !important;
+}
+.lesson-briefing {
+  display: grid;
+  justify-items: center;
+  gap: 12px;
+  padding: 30px clamp(22px, 6vw, 54px) 36px;
+  text-align: center;
+}
+.brief-back {
+  justify-self: start;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  border: 0;
+  background: transparent;
+  color: #6f5b3d;
+  cursor: pointer;
+  font-size: 0.75rem;
+}
+.brief-back svg { width: 14px; }
+.brief-chapter {
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: #7c5a2820;
+  color: #76521f;
+  font-size: 0.72rem;
+  font-weight: 800;
+}
+.brief-icon {
+  width: 70px;
+  height: 70px;
+  display: grid;
+  place-items: center;
+  border: 4px solid #fff1ce;
+  border-radius: 50%;
+  background: #176b5a;
+  color: white;
+  box-shadow: 0 6px 0 #0c493d, 0 12px 28px #134c3e38;
+}
+.brief-icon svg { width: 30px; height: 30px; fill: #e2a83c; }
+.lesson-briefing h2 { margin: 4px 0 0; font-size: clamp(1.6rem, 4vw, 2.2rem); }
+.brief-story { max-width: 420px; margin: 0; color: #62533f; font-size: 0.92rem; line-height: 1.85; }
+.brief-objective, .brief-example {
+  width: 100%;
+  display: grid;
+  gap: 5px;
+  padding: 13px;
+  border: 1px solid #73552c32;
+  border-radius: 12px;
+  background: #fffaf0a6;
+}
+.brief-objective span, .brief-example span { color: #806438; font-size: 0.7rem; }
+.brief-objective strong { font-size: 0.86rem; }
+.brief-example b { font-family: var(--font-training-naskh), serif; font-size: 1.55rem; }
+.brief-meta { display: flex; gap: 8px; }
+.brief-meta span { padding: 5px 9px; border-radius: 999px; background: #6b4c2016; color: #6c512d; font-size: 0.68rem; font-weight: 700; }
+.start-adventure-button { width: 100%; gap: 7px; margin-top: 3px; }
+.start-adventure-button svg { width: 17px; }
+@media (max-width: 900px) {
+  .toolbar { grid-template-columns: auto 1fr auto; }
+  .top-mode-selector { grid-column: 2; grid-row: 1; justify-self: center; }
+  .toolbar > .tool-group:not(.end-tools) { display: none; }
+}
+@media (max-width: 680px) {
+  .top-mode-selector { gap: 2px; padding: 3px; }
+  .top-mode-selector button { width: 37px; padding: 0; }
+  .top-mode-selector button span { display: none; }
+  .adventure-map-dialog.showing-brief { min-height: 0; }
+  .lesson-briefing { padding: 22px 18px 28px; }
+}
+.top-mode-selector {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--muted);
+}
+.top-mode-selector button {
+  height: 36px;
+  gap: 6px;
+  padding-inline: 12px;
+  font-size: 0.76rem;
+}
+.top-mode-selector svg { width: 15px; }
 .icon-tool {
   width: 38px;
   height: 38px;

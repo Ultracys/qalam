@@ -1,5 +1,5 @@
 export type StabilizerLevel = 'off' | 'low' | 'medium' | 'high';
-export type CanvasMode = 'free' | 'training';
+export type CanvasMode = 'free' | 'training' | 'custom-training';
 export type PracticeStyle = 'none' | 'ruqah' | 'diwani' | 'thuluth' | 'naskh' | 'kufi';
 
 export type BrushSettings = {

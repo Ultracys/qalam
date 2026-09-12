@@ -7,7 +7,7 @@ import { Switch } from '@/components/ui/switch';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { canvasStore, useCanvasStore } from '@/store/canvasStore';
 import { PresetSelector } from '@/components/PresetSelector';
-import { ModeSelector, TrainingSettings } from '@/components/TrainingSettings';
+import { CustomTrainingSettings, TrainingSettings } from '@/components/TrainingSettings';
 import type { StabilizerLevel } from '@/types/brush';
 
 function RangeControl({ label, value, min, max, unit, onChange }: { label: string; value: number; min: number; max: number; unit: string; onChange: (value: number) => void }) {
@@ -23,10 +23,10 @@ export function BrushSettings() {
   const { brush, guides, grid, debug, mode } = useCanvasStore();
   return (
     <aside className="settings-panel" aria-label="إعدادات القلم">
-      <ModeSelector />
       <div className="panel-heading"><div><span className="eyebrow">قلم القصب</span><h2>خصائص السن</h2></div><span className="nib-preview" style={{ width: brush.nibWidth * 1.5, rotate: `${-brush.nibAngle}deg`, background: brush.color }} /></div>
-      {mode === 'free' && <PresetSelector />}
+      {(mode === 'free' || mode === 'custom-training') && <PresetSelector />}
       {mode === 'training' && <TrainingSettings />}
+      {mode === 'custom-training' && <CustomTrainingSettings />}
       <RangeControl label="عرض السن" value={brush.nibWidth} min={4} max={34} unit=" بكسل" onChange={(nibWidth) => canvasStore.setBrush({ nibWidth })} />
       <RangeControl label="زاوية السن" value={brush.nibAngle} min={0} max={90} unit="°" onChange={(nibAngle) => canvasStore.setBrush({ nibAngle })} />
       <RangeControl label="تنعيم المسار" value={brush.smoothing} min={0} max={90} unit="%" onChange={(smoothing) => canvasStore.setBrush({ smoothing })} />
