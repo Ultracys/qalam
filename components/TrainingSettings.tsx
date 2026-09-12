@@ -7,7 +7,7 @@ import { Slider } from '@/components/ui/slider';
 import { Textarea } from '@/components/ui/textarea';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { canvasStore, useCanvasStore } from '@/store/canvasStore';
-import { getLesson, getNextLesson, trainingChapters, trainingLessons } from '@/lib/trainingJourney';
+import { calligraphyJourneys, getJourney, getLesson, getNextLesson } from '@/lib/trainingJourney';
 
 function Stars({ count }: { count: number }) {
   return <span className="lesson-stars" aria-label={`${count} من 3 نجوم`}>
@@ -20,14 +20,17 @@ export function TrainingSettings() {
   const [showMap, setShowMap] = useState(true);
   const [briefLessonId, setBriefLessonId] = useState<string | null>(null);
   const [result, setResult] = useState<{ stars: number; message: string } | null>(null);
-  const active = getLesson(state.activeLessonId);
-  const activeIndex = trainingLessons.findIndex((item) => item.id === active.id);
-  const completedCount = Object.keys(state.completedLessons).length;
-  const progress = Math.round((completedCount / trainingLessons.length) * 100);
+  const journey = getJourney(state.trainingJourney);
+  const journeyLessons = journey.chapters.flatMap((chapter) => chapter.lessons);
+  const activeCandidate = getLesson(state.activeLessonId);
+  const active = activeCandidate.journey === journey.id ? activeCandidate : journeyLessons[0];
+  const activeIndex = journeyLessons.findIndex((item) => item.id === active.id);
+  const completedCount = journeyLessons.filter((lesson) => state.completedLessons[lesson.id]).length;
+  const progress = Math.round((completedCount / journeyLessons.length) * 100);
 
   const selectLesson = (lessonId: string) => {
-    const lessonIndex = trainingLessons.findIndex((item) => item.id === lessonId);
-    const unlocked = lessonIndex === 0 || Boolean(state.completedLessons[trainingLessons[lessonIndex - 1].id]);
+    const lessonIndex = journeyLessons.findIndex((item) => item.id === lessonId);
+    const unlocked = lessonIndex === 0 || Boolean(state.completedLessons[journeyLessons[lessonIndex - 1].id]);
     if (!unlocked) return;
     setBriefLessonId(lessonId);
   };
@@ -56,11 +59,11 @@ export function TrainingSettings() {
 
   return <section className="training-journey" aria-label="رحلة التدريب">
     <header className="journey-header">
-      <div><span className="eyebrow"><Map /> رحلة الخطاط</span><strong>المستوى {Math.min(10, Math.floor(state.trainingXp / 250) + 1)}</strong></div>
+      <div><span className="eyebrow"><Map /> {journey.title}</span><strong>المستوى {Math.min(20, Math.floor(state.trainingXp / 500) + 1)}</strong></div>
       <span className="xp-badge"><Sparkles /> {state.trainingXp} XP</span>
     </header>
     <div className="journey-progress" aria-label={`أنجزت ${progress}%`}><span style={{ width: `${progress}%` }} /></div>
-    <small className="journey-progress-label">{completedCount} من {trainingLessons.length} مرحلة</small>
+    <small className="journey-progress-label">{completedCount} من {journeyLessons.length} مرحلة في خط {journey.name}</small>
 
     <article className="current-mission">
       <div className="mission-number">{activeIndex + 1}</div>
@@ -100,13 +103,23 @@ export function TrainingSettings() {
           </div>;
         })() : <>
         <DialogHeader className="adventure-map-header">
-          <div><span className="map-kicker"><Map /> خريطة كنز الخطاط</span><DialogTitle>رحلتك من أول نقطة إلى الإجازة</DialogTitle></div>
-          <DialogDescription>اتبع المسار، أنجز التحديات، وافتح بيئة جديدة في كل فصل.</DialogDescription>
-          <div className="map-total-progress"><span><Trophy /> {completedCount}/{trainingLessons.length}</span><div><i style={{ width: `${progress}%` }} /></div><b>{progress}%</b></div>
+          <div><span className="map-kicker"><Map /> أكاديمية قلم</span><DialogTitle>{journey.title}</DialogTitle></div>
+          <DialogDescription>{journey.description}</DialogDescription>
+          <div className="map-total-progress"><span><Trophy /> {completedCount}/{journeyLessons.length}</span><div><i style={{ width: `${progress}%` }} /></div><b>{progress}%</b></div>
         </DialogHeader>
+        <nav className="journey-selector" aria-label="اختر رحلة الخط">
+          {calligraphyJourneys.map((option) => {
+            const optionLessons = option.chapters.flatMap((chapter) => chapter.lessons);
+            const done = optionLessons.filter((lesson) => state.completedLessons[lesson.id]).length;
+            return <button key={option.id} type="button" className={option.id === journey.id ? 'active' : ''} onClick={() => {
+              canvasStore.set({ trainingJourney: option.id, activeLessonId: optionLessons[0].id });
+              setBriefLessonId(null);
+            }}><span>خط {option.name}</span><small>{done}/{optionLessons.length} · {option.difficulty}</small></button>;
+          })}
+        </nav>
         <div className="adventure-scroll">
           <div className="treasure-route" aria-label="مسار رحلة الخطاط">
-            {trainingChapters.map((chapter) => {
+            {journey.chapters.map((chapter) => {
               const ChapterIcon = [Palmtree, Store, Castle, Mountain][chapter.id - 1];
               const environmentNames = ['واحة البدايات', 'سوق الكلمات', 'قصر الحروف', 'قمة الإجازة'];
               return <section key={chapter.id} className={`adventure-region region-${chapter.id}`}>
@@ -115,10 +128,10 @@ export function TrainingSettings() {
                   <span>الفصل {chapter.id}</span><h3>{chapter.title}</h3><p>{chapter.subtitle}</p>
                 </header>
                 <div className="region-story"><BookOpen />{chapter.story}</div>
-                <div className="adventure-path">
+                <div className="adventure-path curriculum-path">
                   {chapter.lessons.map((lesson, lessonPosition) => {
-                    const index = trainingLessons.findIndex((item) => item.id === lesson.id);
-                    const unlocked = index === 0 || Boolean(state.completedLessons[trainingLessons[index - 1].id]);
+                    const index = journeyLessons.findIndex((item) => item.id === lesson.id);
+                    const unlocked = index === 0 || Boolean(state.completedLessons[journeyLessons[index - 1].id]);
                     const stars = state.completedLessons[lesson.id] ?? 0;
                     return <div key={lesson.id} className={`path-stop stop-${lessonPosition + 1}`}>
                       <button type="button" className={`map-node ${lesson.id === active.id ? 'active' : ''} ${stars ? 'complete' : ''}`} disabled={!unlocked} onClick={() => selectLesson(lesson.id)} aria-label={`${lesson.title}${unlocked ? '' : '، مقفلة'}`}>

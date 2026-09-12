@@ -3,6 +3,7 @@
 import { useSyncExternalStore } from 'react';
 import type { BrushSettings, CanvasMode, PracticeStyle } from '@/types/brush';
 import type { Stroke, Tool } from '@/types/stroke';
+import type { JourneyStyle } from '@/lib/trainingJourney';
 
 export type CanvasState = {
   strokes: Stroke[];
@@ -22,6 +23,7 @@ export type CanvasState = {
   activeLessonId: string;
   completedLessons: Record<string, number>;
   trainingXp: number;
+  trainingJourney: JourneyStyle;
 };
 
 const defaults: CanvasState = {
@@ -38,9 +40,10 @@ const defaults: CanvasState = {
   templateOpacity: 18,
   templateSize: 104,
   trainingRepeat: 3,
-  activeLessonId: 'c1-l1',
+  activeLessonId: 'naskh-c1-l1',
   completedLessons: {},
   trainingXp: 0,
+  trainingJourney: 'naskh',
   brush: {
     color: '#17140f',
     nibWidth: 14,

@@ -794,6 +794,33 @@ input {
   overflow: auto;
   scrollbar-color: #8e754d #e6d6b4;
 }
+.journey-selector {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  padding: 11px 24px;
+  border-bottom: 1px solid #8c6b3a2c;
+  background: #e8d9b7;
+}
+.journey-selector button {
+  display: grid;
+  gap: 2px;
+  padding: 9px 12px;
+  border: 1px solid #765a3330;
+  border-radius: 10px;
+  background: #fff8e7a8;
+  color: #4d402e;
+  cursor: pointer;
+  text-align: right;
+}
+.journey-selector button.active {
+  border-color: #176b5a;
+  background: #176b5a;
+  color: white;
+  box-shadow: 0 3px 0 #0e4c40;
+}
+.journey-selector span { font-size: 0.78rem; font-weight: 800; }
+.journey-selector small { opacity: 0.72; font-size: 0.62rem; }
 .treasure-route {
   min-height: 100%;
   position: relative;
@@ -999,6 +1026,34 @@ input {
 }
 .treasure-finish strong { font-size: 0.72rem; }
 .treasure-finish span { font-size: 0.6rem; color: #704a13; }
+.adventure-region:has(.curriculum-path) { min-height: auto; }
+.curriculum-path {
+  height: auto;
+  min-height: 345px;
+  display: grid;
+  gap: 14px;
+  padding: 12px 5px;
+}
+.curriculum-path::before {
+  top: 28px;
+  bottom: 28px;
+  transform: none;
+}
+.curriculum-path .path-stop {
+  position: relative;
+  top: auto;
+  right: auto;
+  left: auto;
+  min-height: 62px;
+  justify-self: start;
+  z-index: 1;
+}
+.curriculum-path .path-stop:nth-child(even) {
+  justify-self: end;
+  flex-direction: row-reverse;
+  text-align: left;
+}
+.curriculum-path .stop-label { width: 138px; }
 @keyframes active-node-pulse {
   50% { transform: translateY(-2px); box-shadow: 0 4px 0 #4d3923, 0 0 0 9px #e4a72b22; }
 }
@@ -1014,6 +1069,7 @@ input {
   }
   .adventure-map-header [data-slot='dialog-description'] { display: none; }
   .map-total-progress { grid-column: 1; grid-row: auto; min-width: 0; }
+  .journey-selector { grid-template-columns: repeat(2, 1fr); padding: 9px 14px; }
   .treasure-route { padding: 16px; }
 }
 .reset-brush-button {
