@@ -18,6 +18,9 @@ export type CanvasState = {
   trainingText: string;
   templateOpacity: number;
   templateSize: number;
+  activeLessonId: string;
+  completedLessons: Record<string, number>;
+  trainingXp: number;
 };
 
 const defaults: CanvasState = {
@@ -33,6 +36,9 @@ const defaults: CanvasState = {
   trainingText: 'قلم',
   templateOpacity: 18,
   templateSize: 104,
+  activeLessonId: 'c1-l1',
+  completedLessons: {},
+  trainingXp: 0,
   brush: {
     color: '#17140f',
     nibWidth: 14,
@@ -123,6 +129,20 @@ export const canvasStore = {
   },
   clear() {
     state = { ...state, redoStack: state.strokes, strokes: [] };
+    persist();
+    notify();
+  },
+  completeLesson(lessonId: string, stars: number, xp: number) {
+    const previousStars = state.completedLessons[lessonId] ?? 0;
+    const earnedXp = previousStars ? Math.max(0, stars - previousStars) * 10 : xp;
+    state = {
+      ...state,
+      completedLessons: {
+        ...state.completedLessons,
+        [lessonId]: Math.max(previousStars, stars),
+      },
+      trainingXp: state.trainingXp + earnedXp,
+    };
     persist();
     notify();
   },

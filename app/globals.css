@@ -306,6 +306,591 @@ input {
   line-height: 1.7;
   background: var(--card);
 }
+.training-journey {
+  display: grid;
+  gap: 11px;
+}
+.journey-header,
+.journey-header > div,
+.journey-header .eyebrow,
+.xp-badge,
+.template-control > span {
+  display: flex;
+  align-items: center;
+}
+.journey-header {
+  justify-content: space-between;
+  gap: 8px;
+}
+.journey-header > div {
+  align-items: flex-start;
+  flex-direction: column;
+  gap: 2px;
+}
+.journey-header .eyebrow {
+  gap: 4px;
+}
+.journey-header .eyebrow svg,
+.xp-badge svg {
+  width: 12px;
+}
+.journey-header strong {
+  font-size: 0.86rem;
+}
+.xp-badge {
+  gap: 4px;
+  padding: 5px 7px;
+  border-radius: 999px;
+  background: #9d742e17;
+  color: #8a641f;
+  font: 700 0.66rem var(--font-geist-mono);
+  direction: ltr;
+}
+.journey-progress {
+  height: 6px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: var(--muted);
+}
+.journey-progress span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #176b5a, #58aa8d);
+  transition: width 350ms ease;
+}
+.journey-progress-label {
+  margin-top: -7px;
+  color: var(--muted-foreground);
+  font-size: 0.61rem;
+}
+.current-mission {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 9px;
+  padding: 12px;
+  border: 1px solid color-mix(in srgb, var(--primary) 30%, var(--border));
+  border-radius: 13px;
+  background: linear-gradient(145deg, color-mix(in srgb, var(--primary) 8%, var(--card)), var(--card));
+}
+.mission-number {
+  width: 29px;
+  height: 29px;
+  display: grid;
+  place-items: center;
+  border-radius: 9px;
+  background: var(--primary);
+  color: var(--primary-foreground);
+  font: 700 0.72rem var(--font-geist-mono);
+}
+.mission-copy small {
+  color: var(--muted-foreground);
+  font-size: 0.59rem;
+}
+.mission-copy h3 {
+  margin: 1px 0 0;
+  font-size: 0.84rem;
+}
+.lesson-stars {
+  display: inline-flex;
+  gap: 1px;
+  direction: ltr;
+}
+.lesson-stars svg {
+  width: 11px;
+  height: 11px;
+  fill: transparent;
+  color: #c8ccc8;
+}
+.lesson-stars svg.earned {
+  fill: #d69a31;
+  color: #d69a31;
+}
+.mission-story,
+.mission-objective,
+.mission-text {
+  grid-column: 1 / -1;
+}
+.mission-story {
+  display: flex;
+  gap: 7px;
+  margin: 2px 0 0;
+  color: var(--muted-foreground);
+  font-size: 0.67rem;
+  line-height: 1.65;
+}
+.mission-story svg {
+  width: 14px;
+  flex: none;
+  margin-top: 2px;
+  color: #9d742e;
+}
+.mission-objective {
+  padding: 7px 8px;
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--primary) 7%, transparent);
+  color: var(--muted-foreground);
+  font-size: 0.65rem;
+  line-height: 1.5;
+}
+.mission-objective span {
+  margin-left: 5px;
+  color: var(--primary);
+  font-weight: 700;
+}
+.mission-text {
+  padding: 6px;
+  border: 1px dashed color-mix(in srgb, var(--primary) 35%, var(--border));
+  border-radius: 8px;
+  text-align: center;
+  font-family: var(--font-training-naskh), serif;
+  font-size: 1.3rem;
+}
+.template-control {
+  display: grid;
+  gap: 7px;
+}
+.template-control > span {
+  justify-content: space-between;
+  color: var(--muted-foreground);
+  font-size: 0.68rem;
+}
+.template-control b {
+  color: var(--foreground);
+  font: 600 0.66rem var(--font-geist-mono);
+}
+.finish-lesson,
+.map-toggle {
+  width: 100%;
+  gap: 6px;
+}
+.finish-lesson svg,
+.map-toggle svg {
+  width: 15px;
+}
+.lesson-result {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 8px;
+  padding: 10px;
+  border-radius: 11px;
+  background: #9d742e12;
+  color: #8a641f;
+}
+.lesson-result > svg {
+  width: 20px;
+}
+.lesson-result p {
+  margin: 3px 0 7px;
+  color: var(--muted-foreground);
+  font-size: 0.64rem;
+  line-height: 1.5;
+}
+.lesson-result button {
+  grid-column: 1 / -1;
+  gap: 4px;
+}
+.lesson-result button svg {
+  width: 13px;
+}
+.journey-map {
+  display: grid;
+  gap: 14px;
+  padding-top: 4px;
+}
+.journey-chapter {
+  display: grid;
+  gap: 8px;
+  padding-top: 11px;
+  border-top: 1px solid var(--border);
+}
+.chapter-heading {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.chapter-heading > span {
+  width: 25px;
+  height: 25px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--secondary);
+  font: 700 0.67rem var(--font-geist-mono);
+}
+.chapter-heading div {
+  display: grid;
+}
+.chapter-heading strong {
+  font-size: 0.72rem;
+}
+.chapter-heading small,
+.journey-chapter > p {
+  color: var(--muted-foreground);
+  font-size: 0.58rem;
+}
+.journey-chapter > p {
+  margin: 0;
+  line-height: 1.55;
+}
+.lesson-path {
+  display: grid;
+  gap: 5px;
+}
+.lesson-path button {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 27px 1fr;
+  align-items: center;
+  gap: 7px;
+  padding: 6px;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  background: var(--card);
+  color: var(--foreground);
+  text-align: right;
+  cursor: pointer;
+}
+.lesson-path button:disabled {
+  opacity: 0.48;
+  cursor: not-allowed;
+}
+.lesson-path button.active {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--primary) 10%, transparent);
+}
+.lesson-path button.complete > span {
+  background: var(--primary);
+  color: var(--primary-foreground);
+}
+.lesson-path button > span {
+  width: 27px;
+  height: 27px;
+  display: grid;
+  place-items: center;
+  border-radius: 8px;
+  background: var(--muted);
+  font: 700 0.65rem var(--font-geist-mono);
+}
+.lesson-path button > span svg {
+  width: 13px;
+}
+.lesson-path button > div {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.lesson-path b {
+    font-size: 0.66rem;
+}
+.adventure-map-dialog {
+  width: min(1120px, calc(100vw - 32px));
+  height: min(820px, calc(100dvh - 32px));
+  max-width: calc(100vw - 32px) !important;
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: 0;
+  overflow: hidden;
+  padding: 0 !important;
+  background: #f3ead1 !important;
+  color: #352c20 !important;
+  box-shadow: 0 28px 90px #0b1d164a;
+}
+.adventure-map-header {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 7px 24px;
+  padding: 22px 66px 17px 26px;
+  border-bottom: 1px solid #8c6b3a3d;
+  background: linear-gradient(135deg, #fff9e9 0%, #ead9af 100%);
+}
+.adventure-map-header > div:first-child {
+  display: grid;
+  gap: 3px;
+}
+.map-kicker {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #8b5e22;
+  font-size: 0.75rem;
+  font-weight: 800;
+}
+.map-kicker svg {
+  width: 16px;
+}
+.adventure-map-header [data-slot='dialog-title'] {
+  font-size: clamp(1.3rem, 2.4vw, 2rem);
+}
+.adventure-map-header [data-slot='dialog-description'] {
+  grid-column: 1;
+  color: #6f614e;
+  font-size: 0.82rem;
+}
+.map-total-progress {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  min-width: 210px;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  border: 1px solid #8c6b3a35;
+  border-radius: 12px;
+  background: #fffaf0a8;
+}
+.map-total-progress span {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font: 700 0.68rem var(--font-geist-mono);
+}
+.map-total-progress svg {
+  width: 15px;
+  color: #a67120;
+}
+.map-total-progress > div {
+  height: 7px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #d8c8a2;
+}
+.map-total-progress i {
+  display: block;
+  height: 100%;
+  background: #176b5a;
+}
+.map-total-progress b {
+  font: 700 0.67rem var(--font-geist-mono);
+}
+.adventure-scroll {
+  min-height: 0;
+  overflow: auto;
+  scrollbar-color: #8e754d #e6d6b4;
+}
+.treasure-route {
+  min-height: 100%;
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(280px, 1fr));
+  gap: 18px;
+  padding: 24px 28px 30px;
+  background-image: radial-gradient(#725d3720 1px, transparent 1px);
+  background-size: 18px 18px;
+}
+.adventure-region {
+  min-height: 570px;
+  position: relative;
+  overflow: hidden;
+  padding: 18px;
+  border: 1px solid #5a422536;
+  border-radius: 24px 24px 40px 18px;
+  isolation: isolate;
+  box-shadow: inset 0 0 50px #3b2a1312, 0 10px 22px #46331618;
+}
+.adventure-region::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  opacity: 0.32;
+  background-image: repeating-linear-gradient(18deg, transparent 0 28px, #fff 29px 30px);
+}
+.region-1 { background: linear-gradient(170deg, #bfe2cf, #efd99d 72%); }
+.region-2 { background: linear-gradient(170deg, #efc77b, #c8864f 72%); }
+.region-3 { background: linear-gradient(170deg, #c5c0dc, #7783a5 72%); }
+.region-4 { background: linear-gradient(170deg, #d8e4e5, #8fb3ae 72%); }
+.region-scenery {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  display: grid;
+  justify-items: center;
+  gap: 2px;
+  color: #493a27a6;
+}
+.region-scenery svg {
+  width: 34px;
+  height: 34px;
+  stroke-width: 1.5;
+}
+.region-scenery span {
+  font-size: 0.64rem;
+  font-weight: 800;
+}
+.region-heading {
+  max-width: 175px;
+}
+.region-heading > span {
+  display: inline-block;
+  padding: 3px 7px;
+  border-radius: 999px;
+  background: #47341f18;
+  font-size: 0.65rem;
+  font-weight: 800;
+}
+.region-heading h3 {
+  margin: 7px 0 2px;
+  font-size: 1.25rem;
+}
+.region-heading p {
+  margin: 0;
+  color: #514535;
+  font-size: 0.72rem;
+}
+.region-story {
+  min-height: 74px;
+  display: flex;
+  gap: 7px;
+  margin-top: 14px;
+  padding: 10px;
+  border: 1px solid #4e3a2430;
+  border-radius: 12px;
+  background: #fff7e6a6;
+  color: #554838;
+  font-size: 0.68rem;
+  line-height: 1.65;
+}
+.region-story svg {
+  width: 15px;
+  flex: none;
+}
+.adventure-path {
+  height: 345px;
+  position: relative;
+  margin-top: 8px;
+}
+.adventure-path::before {
+  content: '';
+  position: absolute;
+  top: 28px;
+  bottom: 28px;
+  right: 50%;
+  width: 3px;
+  border-radius: 999px;
+  background: repeating-linear-gradient(to bottom, #755f3c 0 8px, transparent 8px 15px);
+  transform: rotate(-7deg);
+  transform-origin: center;
+}
+.path-stop {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.path-stop.stop-1 { top: 8px; right: 18px; }
+.path-stop.stop-2 { top: 102px; left: 14px; flex-direction: row-reverse; text-align: left; }
+.path-stop.stop-3 { top: 194px; right: 8px; }
+.path-stop.stop-4 { top: 284px; left: 19px; flex-direction: row-reverse; text-align: left; }
+.map-node {
+  width: 54px;
+  height: 54px;
+  position: relative;
+  flex: none;
+  display: grid;
+  place-items: center;
+  border: 4px solid #fff2d3;
+  border-radius: 50%;
+  background: #785f3b;
+  color: white;
+  font: 800 0.9rem var(--font-geist-mono);
+  box-shadow: 0 4px 0 #4d3923, 0 7px 16px #3f2d1740;
+  cursor: pointer;
+  transition: transform 160ms ease, box-shadow 160ms ease;
+}
+.map-node:hover:not(:disabled) {
+  transform: translateY(-3px) scale(1.05);
+}
+.map-node:disabled {
+  border-color: #c6bda9;
+  background: #938d82;
+  color: #d8d4cc;
+  box-shadow: 0 4px 0 #6d685e;
+  cursor: not-allowed;
+}
+.map-node.complete {
+  background: #176b5a;
+  box-shadow: 0 4px 0 #0c493d, 0 7px 16px #164f403c;
+}
+.map-node.active {
+  animation: active-node-pulse 1.8s ease-in-out infinite;
+  outline: 3px solid #e4a72b;
+  outline-offset: 3px;
+}
+.map-node svg {
+  width: 20px;
+}
+.current-flag {
+  position: absolute;
+  top: -27px;
+  right: 15px;
+  color: #b83f32;
+  filter: drop-shadow(0 2px 1px #fff);
+}
+.current-flag svg {
+  width: 23px;
+  height: 23px;
+  fill: #d75143;
+}
+.stop-label {
+  width: 112px;
+  display: grid;
+  gap: 2px;
+  padding: 6px 8px;
+  border-radius: 9px;
+  background: #fff8e8d9;
+  box-shadow: 0 3px 10px #3f2d171c;
+}
+.stop-label b {
+  font-size: 0.72rem;
+}
+.stop-label small {
+  overflow: hidden;
+  color: #6e5f4a;
+  font-size: 0.62rem;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.treasure-finish {
+  position: absolute;
+  left: 20px;
+  bottom: 7px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 13px;
+  border: 2px solid #a76c16;
+  border-radius: 13px;
+  background: #f5c653;
+  box-shadow: 0 4px 0 #a76c16;
+}
+.treasure-finish svg {
+  width: 24px;
+  color: #764707;
+}
+.treasure-finish div {
+  display: grid;
+}
+.treasure-finish strong { font-size: 0.72rem; }
+.treasure-finish span { font-size: 0.6rem; color: #704a13; }
+@keyframes active-node-pulse {
+  50% { transform: translateY(-2px); box-shadow: 0 4px 0 #4d3923, 0 0 0 9px #e4a72b22; }
+}
+@media (max-width: 760px) {
+  .adventure-map-dialog {
+    width: calc(100vw - 14px);
+    height: calc(100dvh - 14px);
+    max-width: none !important;
+  }
+  .adventure-map-header {
+    grid-template-columns: 1fr;
+    padding: 17px 52px 14px 16px;
+  }
+  .adventure-map-header [data-slot='dialog-description'] { display: none; }
+  .map-total-progress { grid-column: 1; grid-row: auto; min-width: 0; }
+  .treasure-route { padding: 16px; }
+}
 .reset-brush-button {
   width: 100%;
   flex: none;

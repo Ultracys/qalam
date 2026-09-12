@@ -25,7 +25,7 @@ export function BrushSettings() {
     <aside className="settings-panel" aria-label="إعدادات القلم">
       <ModeSelector />
       <div className="panel-heading"><div><span className="eyebrow">قلم القصب</span><h2>خصائص السن</h2></div><span className="nib-preview" style={{ width: brush.nibWidth * 1.5, rotate: `${-brush.nibAngle}deg`, background: brush.color }} /></div>
-      <PresetSelector />
+      {mode === 'free' && <PresetSelector />}
       {mode === 'training' && <TrainingSettings />}
       <RangeControl label="عرض السن" value={brush.nibWidth} min={4} max={34} unit=" بكسل" onChange={(nibWidth) => canvasStore.setBrush({ nibWidth })} />
       <RangeControl label="زاوية السن" value={brush.nibAngle} min={0} max={90} unit="°" onChange={(nibAngle) => canvasStore.setBrush({ nibAngle })} />
