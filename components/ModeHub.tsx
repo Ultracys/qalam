@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import Image from 'next/image';
 import { ArrowLeft, ArrowRight, BookOpenText, Flame, Gamepad2, LockKeyhole, Map, NotebookPen, PenTool, Sparkles, Star, Target, TimerReset } from 'lucide-react';
 import { CalligraphyCanvas } from '@/components/CalligraphyCanvas';
 import { TraceRace } from '@/components/TraceRace';
@@ -91,7 +92,7 @@ export function ModeHub() {
         <section className="game-tile-grid" aria-label="قائمة أطوار قلم">
           <button className="game-tile journey-tile" type="button" onClick={() => openCanvas('training')}>
             <span className="tile-corner-label"><Map aria-hidden="true" /> رحلتك الحالية</span>
-            <div className="journey-emblem"><span>ق</span><i>{level}</i></div>
+            <div className="journey-emblem"><Image src="/qalam-logo.svg" width={88} height={88} alt="شعار قلم" /><i>{level}</i></div>
             <div className="journey-copy"><small>{journey.title}</small><strong>{activeLesson.title}</strong><p>{activeLesson.objective}</p></div>
             <div className="journey-progress"><span><b>{progress}%</b> من الرحلة</span><i><b style={{ width: `${progress}%` }} /></i><small>{completedCount} من {journeyLessons.length} درسًا</small></div>
             <span className="tile-enter">واصل التدريب <ArrowLeft aria-hidden="true" /></span>
@@ -126,7 +127,7 @@ function MenuHeader({ xp, level, onHome }: { xp: number; level: number; onHome?:
   return (
     <header className="game-menu-header">
       <button className="menu-brand" type="button" onClick={onHome} disabled={!onHome}>
-        <span>ق</span><div><strong>قلم</strong><small>مساحة الخط العربي</small></div>
+        <Image src="/qalam-logo.svg" width={42} height={42} alt="شعار قلم" /><div><strong>قلم</strong><small>مساحة الخط العربي</small></div>
       </button>
       <div className="player-strip"><span className="player-level">المستوى <b>{level}</b></span><span className="player-xp"><Sparkles aria-hidden="true" /><b>{xp}</b> XP</span></div>
     </header>

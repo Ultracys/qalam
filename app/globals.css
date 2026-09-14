@@ -641,15 +641,10 @@ input {
   cursor: pointer;
 }
 .menu-brand:disabled { cursor: default; }
-.menu-brand > span {
+.menu-brand > img {
   width: 42px;
   height: 42px;
-  display: grid;
-  place-items: center;
-  border-radius: 6px 14px 6px 14px;
-  background: #e8b536;
-  color: #102820;
-  font: 700 1.65rem var(--font-training-ruqah);
+  border-radius: 11px;
   box-shadow: 0 5px 18px #0004;
 }
 .menu-brand div { display: grid; line-height: 1.05; }
@@ -700,7 +695,7 @@ input {
 .journey-tile { grid-row: 1 / 3; display: grid; grid-template-rows: 1fr auto auto auto; align-content: end; gap: 13px; padding: 38px 26px 22px; background: linear-gradient(160deg, #f8f6ef 0%, #dde8e1 100%); }
 .journey-tile::after { content: 'ق'; position: absolute; top: 12%; left: -5%; color: #143d3020; font: 700 16rem var(--font-training-ruqah); transform: rotate(-12deg); }
 .journey-emblem { position: relative; z-index: 1; align-self: center; justify-self: center; width: 122px; height: 122px; display: grid; place-items: center; border: 4px solid #183e32; border-radius: 50%; background: #e8b536; box-shadow: 0 0 0 9px #e8b53638, 0 14px 30px #1d3c3138; }
-.journey-emblem span { font: 700 4.5rem var(--font-training-ruqah); }
+.journey-emblem img { width: 88px; height: 88px; border-radius: 24px; }
 .journey-emblem i { position: absolute; right: -5px; bottom: 4px; width: 34px; height: 34px; display: grid; place-items: center; border: 3px solid #f8f6ef; border-radius: 50%; background: #183e32; color: #fff; font: 700 0.76rem var(--font-geist-mono); }
 .journey-copy { position: relative; z-index: 1; display: grid; }
 .journey-copy small { color: #3c6b5a; font-size: 0.74rem; }
@@ -781,7 +776,7 @@ button.challenge-tile:hover { z-index: 2; transform: scale(1.018); box-shadow: 0
   .game-tile-grid { display: grid; grid-template-columns: 1fr; grid-template-rows: 340px 135px 135px 190px; }
   .journey-tile { grid-column: auto; display: grid; grid-template-columns: 94px 1fr; padding-inline: 18px; }
   .journey-emblem { width: 86px; height: 86px; }
-  .journey-emblem span { font-size: 3.2rem; }
+  .journey-emblem img { width: 64px; height: 64px; border-radius: 18px; }
   .quick-tile { padding: 16px; }
   .quick-tile-icon { width: 52px; height: 52px; }
   .challenges-banner { grid-column: auto; grid-template-columns: auto 1fr; padding: 18px; }
@@ -793,6 +788,116 @@ button.challenge-tile:hover { z-index: 2; transform: scale(1.018); box-shadow: 0
   .challenge-visual { width: 110px; height: 110px; }
   .challenge-visual > svg { width: 100px; height: 100px; }
   .menu-section-heading { align-items: center; }
+}
+
+/* Accuracy-driven race and advancing fire wall */
+.race-board-direct { margin-top: 28px; }
+.race-live-stats {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 14px;
+  margin: 0 4px 14px;
+  color: #9cb0a7;
+  font-size: 0.76rem;
+}
+.race-live-stats span b { color: #f0c64d; font: 700 0.82rem var(--font-geist-mono); }
+.race-live-stats > i { height: 6px; overflow: hidden; border-radius: 99px; background: #ffffff14; direction: rtl; }
+.race-live-stats > i b { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg, #e9b63d, #36a47f); transition: width 120ms linear; }
+.race-canvas-danger { isolation: isolate; }
+.race-canvas-danger canvas { aspect-ratio: 12 / 5; }
+.race-fire-wall {
+  position: absolute;
+  z-index: 3;
+  top: -8%;
+  bottom: -8%;
+  width: 86px;
+  pointer-events: none;
+  transform: translateX(52%);
+  transition: right 100ms linear;
+  filter: drop-shadow(-12px 0 18px #ff6a007d);
+}
+.fire-glow {
+  position: absolute;
+  inset: 0 -56px 0 -18px;
+  background: linear-gradient(90deg, transparent, #ff7a001f 42%, #ffca4552 100%);
+  mix-blend-mode: multiply;
+}
+.fire-core { position: absolute; inset: 0; overflow: hidden; }
+.fire-core::after {
+  content: '';
+  position: absolute;
+  top: 8%;
+  bottom: 8%;
+  right: 0;
+  width: 34px;
+  background: linear-gradient(90deg, #ff8b17, #ffd45c 55%, #fff6b0);
+  border-radius: 65% 0 0 58%;
+  box-shadow: inset 10px 0 15px #e6370a, -8px 0 16px #ff781c;
+}
+.fire-core i {
+  position: absolute;
+  z-index: 2;
+  right: 18px;
+  width: 52px;
+  height: 44px;
+  clip-path: polygon(50% 0, 67% 27%, 91% 43%, 100% 72%, 77% 100%, 30% 94%, 0 68%, 17% 35%, 35% 48%);
+  background: radial-gradient(circle at 55% 78%, #fff8aa 0 12%, #ffc82f 13% 36%, #ff6419 37% 73%, #bd240b 74%);
+  transform: scale(0.8);
+  transform-origin: right bottom;
+  animation: fire-flicker 430ms ease-in-out infinite alternate;
+}
+.fire-core i:nth-child(1) { top: -1%; animation-delay: -80ms; }
+.fire-core i:nth-child(2) { top: 7%; animation-delay: -240ms; transform: scale(.95); }
+.fire-core i:nth-child(3) { top: 15%; animation-delay: -130ms; }
+.fire-core i:nth-child(4) { top: 23%; animation-delay: -340ms; transform: scale(1.05); }
+.fire-core i:nth-child(5) { top: 31%; animation-delay: -40ms; }
+.fire-core i:nth-child(6) { top: 39%; animation-delay: -290ms; transform: scale(.9); }
+.fire-core i:nth-child(7) { top: 47%; animation-delay: -180ms; }
+.fire-core i:nth-child(8) { top: 55%; animation-delay: -380ms; transform: scale(1.08); }
+.fire-core i:nth-child(9) { top: 63%; animation-delay: -110ms; }
+.fire-core i:nth-child(10) { top: 71%; animation-delay: -310ms; transform: scale(.92); }
+.fire-core i:nth-child(11) { top: 79%; animation-delay: -210ms; }
+.fire-core i:nth-child(12) { top: 87%; animation-delay: -30ms; transform: scale(1.05); }
+.fire-core i:nth-child(13) { top: 94%; animation-delay: -260ms; }
+.fire-core i:nth-child(14) { top: 102%; animation-delay: -160ms; }
+@keyframes fire-flicker {
+  from { translate: 7px 3px; scale: .82 1.05; filter: hue-rotate(-8deg); }
+  to { translate: -7px -4px; scale: 1.12 .82; filter: hue-rotate(9deg); }
+}
+.fire-embers { position: absolute; inset: 0; }
+.fire-embers i { position: absolute; right: 58px; width: 6px; height: 6px; border-radius: 50%; background: #ffb52e; box-shadow: 0 0 8px #ff641c; animation: ember-fly 1.15s linear infinite; }
+.fire-embers i:nth-child(1) { top: 7%; animation-delay: -.2s; }
+.fire-embers i:nth-child(2) { top: 15%; animation-delay: -.8s; scale: .7; }
+.fire-embers i:nth-child(3) { top: 24%; animation-delay: -.4s; }
+.fire-embers i:nth-child(4) { top: 33%; animation-delay: -1s; scale: .55; }
+.fire-embers i:nth-child(5) { top: 41%; animation-delay: -.1s; }
+.fire-embers i:nth-child(6) { top: 49%; animation-delay: -.65s; scale: .7; }
+.fire-embers i:nth-child(7) { top: 58%; animation-delay: -.35s; }
+.fire-embers i:nth-child(8) { top: 66%; animation-delay: -.9s; scale: .5; }
+.fire-embers i:nth-child(9) { top: 74%; animation-delay: -.15s; }
+.fire-embers i:nth-child(10) { top: 82%; animation-delay: -.72s; scale: .65; }
+.fire-embers i:nth-child(11) { top: 90%; animation-delay: -.45s; }
+.fire-embers i:nth-child(12) { top: 97%; animation-delay: -1.05s; scale: .55; }
+@keyframes ember-fly { to { translate: -70px -22px; opacity: 0; } }
+.mini-flame {
+  width: 26px;
+  height: 34px;
+  display: block;
+  border-radius: 70% 25% 60% 40%;
+  background: linear-gradient(135deg, #ffe568, #ff7a1a 62%, #df320b);
+  transform: rotate(45deg);
+  box-shadow: 0 0 18px #ff651b99;
+}
+@media (max-width: 700px) {
+  .race-live-stats { grid-template-columns: 1fr auto; }
+  .race-live-stats > i { grid-column: 1 / -1; grid-row: 2; }
+  .race-canvas-danger canvas { min-height: 330px; }
+  .race-fire-wall { width: 66px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .fire-core i, .fire-embers i { animation: none; }
+  .race-fire-wall, .race-live-stats > i b { transition: none; }
 }
 .top-mode-selector {
   display: flex;
