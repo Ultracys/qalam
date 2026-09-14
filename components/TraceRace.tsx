@@ -5,8 +5,11 @@ import { ArrowRight, Clock3, Gauge, RotateCcw, ShieldCheck, Trophy } from 'lucid
 
 const WIDTH = 960;
 const HEIGHT = 400;
-const ROUND_SECONDS = 55;
-const FIRE_GRACE_SECONDS = 4;
+const DIFFICULTIES = {
+  easy: { label: 'سهل', description: 'مسار أوسع ونار أهدأ', duration: 52, grace: 5, tolerance: 18, coverageTarget: 0.42, precisionPower: 0.68, coveragePower: 0.48, overdrawLimit: 0.9, catchFloor: 25, catchGap: 11 },
+  normal: { label: 'متوسط', description: 'توازن بين الدقة والسرعة', duration: 42, grace: 2.5, tolerance: 14, coverageTarget: 0.5, precisionPower: 0.78, coveragePower: 0.58, overdrawLimit: 0.78, catchFloor: 18, catchGap: 7 },
+  hard: { label: 'صعب', description: 'مسار صارم ونار سريعة', duration: 34, grace: 1.5, tolerance: 10, coverageTarget: 0.58, precisionPower: 0.92, coveragePower: 0.7, overdrawLimit: 0.65, catchFloor: 14, catchGap: 5 },
+} as const;
 
 const CHALLENGES = [
   { text: 'العِلْمُ نُورٌ وَالجَهْلُ ظَلَامٌ', font: '--font-training-naskh', fontName: 'خط النسخ' },
@@ -16,9 +19,10 @@ const CHALLENGES = [
   { text: 'بِالعِلْمِ نَبْنِي المُسْتَقْبَلَ', font: '--font-training-naskh', fontName: 'خط النسخ' },
 ] as const;
 
-type Point = { x: number; y: number };
+type Point = { x: number; y: number; pressure: number };
 type GameState = 'ready' | 'running' | 'finished';
 type Challenge = (typeof CHALLENGES)[number];
+type Difficulty = keyof typeof DIFFICULTIES;
 type MaskScore = { accuracy: number; coverage: number; precision: number };
 type RaceResult = MaskScore & { timeScore: number; total: number; elapsed: number; caught: boolean };
 
@@ -28,6 +32,30 @@ function scoreLabel(score: number) {
   if (score >= 70) return 'أداء متقن';
   if (score >= 55) return 'بداية قوية';
   return 'محاولة واعدة';
+}
+
+function drawChiselSegment(context: CanvasRenderingContext2D, previous: Point, current: Point) {
+  const nibAngle = (45 * Math.PI) / 180;
+  const edges = (point: Point) => {
+    const width = 9 * (0.72 + point.pressure * 0.42);
+    const half = width / 2;
+    const offsetX = Math.cos(nibAngle) * half;
+    const offsetY = Math.sin(nibAngle) * half;
+    return {
+      left: { x: point.x - offsetX, y: point.y - offsetY },
+      right: { x: point.x + offsetX, y: point.y + offsetY },
+    };
+  };
+  const from = edges(previous);
+  const to = edges(current);
+  context.fillStyle = '#13251f';
+  context.beginPath();
+  context.moveTo(from.left.x, from.left.y);
+  context.lineTo(from.right.x, from.right.y);
+  context.lineTo(to.right.x, to.right.y);
+  context.lineTo(to.left.x, to.left.y);
+  context.closePath();
+  context.fill();
 }
 
 export function TraceRace({ onExit }: { onExit: () => void }) {
@@ -40,9 +68,11 @@ export function TraceRace({ onExit }: { onExit: () => void }) {
   const lastLiveScoreRef = useRef(0);
   const correctProgressRef = useRef(0);
   const challengeRef = useRef<Challenge>(CHALLENGES[0]);
+  const difficultyRef = useRef<Difficulty>('normal');
   const [challenge, setChallenge] = useState<Challenge>(CHALLENGES[0]);
+  const [difficulty, setDifficulty] = useState<Difficulty>('normal');
   const [gameState, setGameState] = useState<GameState>('ready');
-  const [secondsLeft, setSecondsLeft] = useState(ROUND_SECONDS);
+  const [secondsLeft, setSecondsLeft] = useState(DIFFICULTIES.normal.duration);
   const [correctProgress, setCorrectProgress] = useState(0);
   const [liveAccuracy, setLiveAccuracy] = useState(0);
   const [fireProgress, setFireProgress] = useState(0);
@@ -67,16 +97,16 @@ export function TraceRace({ onExit }: { onExit: () => void }) {
 
     const selected = challengeRef.current;
     const family = getComputedStyle(document.body).getPropertyValue(selected.font).trim() || 'serif';
-    let size = selected.font === '--font-training-kufi' ? 65 : 82;
+    let size = selected.font === '--font-training-kufi' ? 70 : 78;
     context.font = `${size}px ${family}`;
-    while (context.measureText(selected.text).width > WIDTH - 120 && size > 42) {
+    while (context.measureText(selected.text).width > WIDTH - 80 && size > 58) {
       size -= 2;
       context.font = `${size}px ${family}`;
     }
     context.textAlign = 'center';
     context.textBaseline = 'middle';
     context.direction = 'rtl';
-    context.lineWidth = mask ? 22 : 1;
+    context.lineWidth = mask ? DIFFICULTIES[difficultyRef.current].tolerance : 1;
     context.strokeStyle = mask ? '#fff' : '#176b5a30';
     context.fillStyle = mask ? '#fff' : '#176b5a55';
     if (mask) context.strokeText(selected.text, WIDTH / 2, 207);
@@ -131,20 +161,29 @@ export function TraceRace({ onExit }: { onExit: () => void }) {
       if (hasInk && hasTarget) overlap += 1;
     }
     const precision = inkPixels ? overlap / inkPixels : 0;
-    const coverage = targetPixels ? Math.min(1, overlap / (targetPixels * 0.38)) : 0;
+    const rawCoverage = targetPixels ? overlap / targetPixels : 0;
+    const rules = DIFFICULTIES[difficultyRef.current];
+    const coverage = Math.min(1, rawCoverage / rules.coverageTarget);
+    const overdrawPenalty = inkPixels > targetPixels * rules.overdrawLimit
+      ? (targetPixels * rules.overdrawLimit) / inkPixels
+      : 1;
+    const shapeAccuracy = Math.pow(precision, rules.precisionPower) * Math.pow(coverage, rules.coveragePower) * overdrawPenalty;
     return {
       precision: Math.round(precision * 100),
       coverage: Math.round(coverage * 100),
-      accuracy: Math.round((precision * 0.76 + coverage * 0.24) * 100),
+      accuracy: Math.round(shapeAccuracy * 100),
     };
   }, []);
 
   const finishGame = useCallback((caught = false) => {
     if (!startedAtRef.current) return;
-    const elapsed = Math.min(ROUND_SECONDS, (Date.now() - startedAtRef.current) / 1000);
+    const rules = DIFFICULTIES[difficultyRef.current];
+    const elapsed = Math.min(rules.duration, (Date.now() - startedAtRef.current) / 1000);
     const score = analyzeMasks();
-    const timeScore = Math.round(Math.max(0, Math.min(100, 118 - (elapsed / ROUND_SECONDS) * 68)));
-    setResult({ ...score, timeScore, total: Math.round(score.accuracy * 0.72 + timeScore * 0.28), elapsed, caught });
+    const timeScore = Math.round(Math.max(0, Math.min(100, 118 - (elapsed / rules.duration) * 68)));
+    const blendedTotal = Math.round(score.accuracy * 0.8 + timeScore * 0.2);
+    const total = score.accuracy < 65 ? Math.min(score.accuracy + 4, blendedTotal) : blendedTotal;
+    setResult({ ...score, timeScore, total, elapsed, caught });
     setGameState('finished');
     drawingRef.current = false;
     lastPointRef.current = null;
@@ -154,18 +193,21 @@ export function TraceRace({ onExit }: { onExit: () => void }) {
     if (gameState !== 'running') return;
     const timer = window.setInterval(() => {
       const elapsed = (Date.now() - startedAtRef.current) / 1000;
-      const left = Math.max(0, ROUND_SECONDS - elapsed);
-      const chaseElapsed = Math.max(0, elapsed - FIRE_GRACE_SECONDS);
-      const nextFireProgress = Math.min(100, (chaseElapsed / (ROUND_SECONDS - FIRE_GRACE_SECONDS)) * 100);
+      const rules = DIFFICULTIES[difficultyRef.current];
+      const left = Math.max(0, rules.duration - elapsed);
+      const chaseElapsed = Math.max(0, elapsed - rules.grace);
+      const nextFireProgress = Math.min(100, (chaseElapsed / (rules.duration - rules.grace)) * 100);
       setSecondsLeft(Math.ceil(left));
       setFireProgress(nextFireProgress);
       if (left <= 0) finishGame(false);
-      else if (chaseElapsed > 0 && nextFireProgress >= Math.max(22, correctProgressRef.current + 10)) finishGame(true);
+      else if (chaseElapsed > 0 && nextFireProgress >= Math.max(rules.catchFloor, correctProgressRef.current + rules.catchGap)) finishGame(true);
     }, 100);
     return () => window.clearInterval(timer);
   }, [finishGame, gameState]);
 
   const startGame = () => {
+    difficultyRef.current = difficulty;
+    const rules = DIFFICULTIES[difficulty];
     const currentIndex = CHALLENGES.indexOf(challengeRef.current);
     let nextIndex = Math.floor(Math.random() * CHALLENGES.length);
     if (nextIndex === currentIndex) nextIndex = (nextIndex + 1) % CHALLENGES.length;
@@ -178,14 +220,18 @@ export function TraceRace({ onExit }: { onExit: () => void }) {
     correctProgressRef.current = 0;
     setLiveAccuracy(0);
     setFireProgress(0);
-    setSecondsLeft(ROUND_SECONDS);
+    setSecondsLeft(rules.duration);
     startedAtRef.current = Date.now();
     setGameState('running');
   };
 
   const pointFromEvent = (event: React.PointerEvent<HTMLCanvasElement>) => {
     const rect = event.currentTarget.getBoundingClientRect();
-    return { x: ((event.clientX - rect.left) / rect.width) * WIDTH, y: ((event.clientY - rect.top) / rect.height) * HEIGHT };
+    return {
+      x: ((event.clientX - rect.left) / rect.width) * WIDTH,
+      y: ((event.clientY - rect.top) / rect.height) * HEIGHT,
+      pressure: event.pressure > 0 ? event.pressure : 0.55,
+    };
   };
 
   const handlePointerDown = (event: React.PointerEvent<HTMLCanvasElement>) => {
@@ -203,14 +249,7 @@ export function TraceRace({ onExit }: { onExit: () => void }) {
     const previous = lastPointRef.current;
     const context = inkRef.current?.getContext('2d');
     if (!previous || !context) return;
-    context.strokeStyle = '#13251f';
-    context.lineWidth = Math.max(5, 11 * (event.pressure || 0.55));
-    context.lineCap = 'round';
-    context.lineJoin = 'round';
-    context.beginPath();
-    context.moveTo(previous.x, previous.y);
-    context.lineTo(next.x, next.y);
-    context.stroke();
+    drawChiselSegment(context, previous, next);
     lastPointRef.current = next;
     paint();
 
@@ -254,18 +293,31 @@ export function TraceRace({ onExit }: { onExit: () => void }) {
           <canvas ref={canvasRef} width={WIDTH} height={HEIGHT} aria-label="منطقة تحدي الكتابة فوق الجملة" onPointerDown={handlePointerDown} onPointerMove={handlePointerMove} onPointerUp={endStroke} onPointerCancel={endStroke} onContextMenu={(event) => event.preventDefault()} />
 
           {gameState === 'running' && (
-            <div className="race-fire-wall" style={{ right: `${fireProgress}%` }} aria-hidden="true">
-              <div className="fire-glow" />
-              <div className="fire-core">{Array.from({ length: 14 }, (_, index) => <i key={index} />)}</div>
-              <div className="fire-embers">{Array.from({ length: 12 }, (_, index) => <i key={index} />)}</div>
-            </div>
+            <>
+              <div className="race-burned-zone" style={{ width: `${fireProgress}%` }} aria-hidden="true" />
+              <div className="race-fire-wall" style={{ right: `${fireProgress}%` }} aria-hidden="true">
+                <div className="fire-glow" />
+                <div className="fire-core">{Array.from({ length: 14 }, (_, index) => <i key={index} />)}</div>
+                <div className="fire-embers">{Array.from({ length: 12 }, (_, index) => <i key={index} />)}</div>
+              </div>
+            </>
           )}
 
           {gameState === 'ready' && (
             <div className="race-overlay">
               <span className="race-overlay-icon"><span className="mini-flame" /></span>
-              <h1>جملة جديدة كل مرة</h1>
-              <p>لديك {ROUND_SECONDS} ثانية. التقدم يتحرك فقط عندما يصيب حبرك مسار الكتابة الشفافة.</p>
+              <h1>اختر مستوى الصعوبة</h1>
+              <p>كل مستوى يغيّر سرعة النار ودقة المسار وصرامة التقييم.</p>
+              <div className="difficulty-grid" role="radiogroup" aria-label="مستوى الصعوبة">
+                {(Object.keys(DIFFICULTIES) as Difficulty[]).map((key) => {
+                  const option = DIFFICULTIES[key];
+                  return (
+                    <button className={difficulty === key ? 'active' : ''} type="button" role="radio" aria-checked={difficulty === key} onClick={() => setDifficulty(key)} key={key}>
+                      <strong>{option.label}</strong><span>{option.duration} ثانية</span><small>{option.description}</small>
+                    </button>
+                  );
+                })}
+              </div>
               <button type="button" onClick={startGame}>ابدأ السباق</button>
             </div>
           )}
@@ -285,7 +337,7 @@ export function TraceRace({ onExit }: { onExit: () => void }) {
           )}
         </div>
 
-        <div className="race-status-row"><span><i className="status-dot" /> {gameState === 'running' ? `النار تلاحقك · ${challenge.fontName}` : gameState === 'finished' ? 'اكتمل التحدي' : 'بانتظارك'}</span><span>النتيجة = 72% دقة + 28% سرعة</span>{gameState === 'running' && <button type="button" onClick={() => finishGame(false)}>أنهيت الكتابة</button>}</div>
+        <div className="race-status-row"><span><i className="status-dot" /> {gameState === 'running' ? `النار تلاحقك · ${challenge.fontName} · ${DIFFICULTIES[difficultyRef.current].label}` : gameState === 'finished' ? 'اكتمل التحدي' : 'بانتظارك'}</span><span>النتيجة = 80% دقة + 20% سرعة</span>{gameState === 'running' && <button type="button" onClick={() => finishGame(false)}>أنهيت الكتابة</button>}</div>
       </section>
     </main>
   );
