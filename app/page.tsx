@@ -1,4 +1,4 @@
-import { CalligraphyCanvas } from '@/components/CalligraphyCanvas';
+import { ModeHub } from '@/components/ModeHub';
 
 const structuredData = {
   '@context': 'https://schema.org',
@@ -15,6 +15,7 @@ const structuredData = {
   offers: { '@type': 'Offer', price: '0', priceCurrency: 'SAR' },
   featureList: [
     'التدرب على خط الرقعة والنسخ والثلث والديواني',
+    'سباق كتابة تفاعلي يقيس الدقة والسرعة',
     'محاكاة عرض سن قلم القصب وزاويته',
     'دعم ضغط القلم الإلكتروني وميله',
     'تصدير الرسومات بصيغتي PNG وSVG',
@@ -30,7 +31,7 @@ export default function Home() {
           __html: JSON.stringify(structuredData).replace(/</g, '\\u003c'),
         }}
       />
-      <CalligraphyCanvas />
+      <ModeHub />
     </>
   );
 }
