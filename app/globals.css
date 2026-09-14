@@ -608,6 +608,192 @@ input {
   .mode-card, .mode-card-action svg, .race-fire, .race-pen { transition: none; }
   .race-timer.danger { animation: none; }
 }
+
+/* Console-style home menu */
+.game-menu-shell {
+  min-height: 100dvh;
+  overflow: auto;
+  display: grid;
+  grid-template-rows: 72px 1fr 44px;
+  color: #f7f5ec;
+  background:
+    linear-gradient(135deg, #071d18e8, #123a30e8),
+    repeating-linear-gradient(115deg, #fff 0 1px, transparent 1px 76px),
+    #0e3027;
+}
+.game-menu-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 clamp(18px, 5vw, 72px);
+  border-bottom: 1px solid #ffffff19;
+  background: #071c17a8;
+}
+.menu-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font-family: inherit;
+  text-align: right;
+  cursor: pointer;
+}
+.menu-brand:disabled { cursor: default; }
+.menu-brand > span {
+  width: 42px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+  border-radius: 6px 14px 6px 14px;
+  background: #e8b536;
+  color: #102820;
+  font: 700 1.65rem var(--font-training-ruqah);
+  box-shadow: 0 5px 18px #0004;
+}
+.menu-brand div { display: grid; line-height: 1.05; }
+.menu-brand strong { font-size: 1.05rem; }
+.menu-brand small { color: #93aaa0; font-size: 0.68rem; }
+.player-strip { display: flex; align-items: center; height: 38px; direction: ltr; }
+.player-strip > span { height: 100%; display: flex; align-items: center; gap: 6px; padding: 0 16px; transform: skewX(-12deg); }
+.player-strip > span > * { transform: skewX(12deg); }
+.player-level { background: #f3f0e8; color: #1b332b; }
+.player-xp { background: #e8b536; color: #173329; }
+.player-xp svg { width: 15px; }
+.home-menu, .challenge-menu { width: min(1120px, calc(100% - 30px)); margin: 0 auto; padding: 22px 0 28px; }
+.game-tabs { height: 40px; display: flex; align-items: stretch; width: fit-content; margin-bottom: 18px; }
+.game-tabs button { min-width: 110px; padding: 0 20px; border: 0; border-left: 1px solid #ffffff1f; background: #ffffff0e; color: #9bb0a7; font-family: inherit; font-size: 0.82rem; cursor: pointer; }
+.game-tabs button:first-child { border-radius: 0 7px 7px 0; }
+.game-tabs button:last-child { border-radius: 7px 0 0 7px; }
+.game-tabs button.active, .game-tabs button:hover { background: #e8b536; color: #173329; font-weight: 800; }
+.home-menu-heading, .menu-section-heading { display: flex; align-items: end; justify-content: space-between; gap: 24px; margin-bottom: 18px; }
+.home-menu-heading span, .menu-section-heading span { color: #e8b536; font-size: 0.75rem; font-weight: 700; }
+.home-menu-heading h1, .menu-section-heading h1 { margin: 0; font-size: clamp(1.8rem, 3vw, 2.7rem); line-height: 1.1; }
+.home-menu-heading p { margin: 0 0 4px; color: #9bb0a7; font-size: 0.85rem; }
+.menu-section-heading button { display: flex; align-items: center; gap: 7px; padding: 8px 12px; border: 1px solid #ffffff22; border-radius: 6px; background: #ffffff0d; color: #c8d3ce; font-family: inherit; cursor: pointer; }
+.menu-section-heading button svg { width: 15px; }
+.game-tile-grid {
+  display: grid;
+  grid-template-columns: 1.35fr 0.9fr 0.9fr;
+  grid-template-rows: minmax(160px, 1fr) minmax(190px, 1.15fr);
+  gap: 8px;
+  min-height: min(570px, calc(100dvh - 270px));
+}
+.game-tile {
+  position: relative;
+  overflow: hidden;
+  border: 0;
+  border-radius: 3px;
+  color: #173329;
+  font-family: inherit;
+  text-align: right;
+  cursor: pointer;
+  transition: transform 140ms ease, box-shadow 140ms ease, filter 140ms ease;
+}
+.game-tile:hover, .game-tile:focus-visible { z-index: 2; transform: scale(1.018); box-shadow: 0 12px 34px #0006; filter: brightness(1.04); outline: 3px solid #fff; outline-offset: -3px; }
+.tile-corner-label { position: absolute; top: 0; right: 0; z-index: 2; display: flex; align-items: center; gap: 6px; padding: 7px 13px; background: #12382f; color: #fff; font-size: 0.7rem; font-weight: 700; }
+.tile-corner-label svg { width: 14px; }
+.tile-enter { display: flex; align-items: center; gap: 8px; font-size: 0.78rem; font-weight: 800; }
+.tile-enter svg { width: 15px; transition: transform 140ms ease; }
+.game-tile:hover .tile-enter svg, .challenge-tile:hover .tile-enter svg { transform: translateX(-4px); }
+.journey-tile { grid-row: 1 / 3; display: grid; grid-template-rows: 1fr auto auto auto; align-content: end; gap: 13px; padding: 38px 26px 22px; background: linear-gradient(160deg, #f8f6ef 0%, #dde8e1 100%); }
+.journey-tile::after { content: 'ق'; position: absolute; top: 12%; left: -5%; color: #143d3020; font: 700 16rem var(--font-training-ruqah); transform: rotate(-12deg); }
+.journey-emblem { position: relative; z-index: 1; align-self: center; justify-self: center; width: 122px; height: 122px; display: grid; place-items: center; border: 4px solid #183e32; border-radius: 50%; background: #e8b536; box-shadow: 0 0 0 9px #e8b53638, 0 14px 30px #1d3c3138; }
+.journey-emblem span { font: 700 4.5rem var(--font-training-ruqah); }
+.journey-emblem i { position: absolute; right: -5px; bottom: 4px; width: 34px; height: 34px; display: grid; place-items: center; border: 3px solid #f8f6ef; border-radius: 50%; background: #183e32; color: #fff; font: 700 0.76rem var(--font-geist-mono); }
+.journey-copy { position: relative; z-index: 1; display: grid; }
+.journey-copy small { color: #3c6b5a; font-size: 0.74rem; }
+.journey-copy strong { font-size: clamp(1.4rem, 2vw, 1.85rem); }
+.journey-copy p { margin: 5px 0 0; color: #526961; font-size: 0.77rem; line-height: 1.55; }
+.journey-progress { position: relative; z-index: 1; display: grid; grid-template-columns: 1fr auto; gap: 6px 12px; }
+.journey-progress > span { font-size: 0.72rem; }
+.journey-progress > small { color: #64766f; font-size: 0.66rem; }
+.journey-progress > i { grid-column: 1 / -1; height: 5px; overflow: hidden; border-radius: 99px; background: #1733291f; }
+.journey-progress > i b { display: block; height: 100%; background: #168264; }
+.journey-tile .tile-enter { position: relative; z-index: 1; color: #176b55; }
+.quick-tile { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 18px; padding: 22px; }
+.free-tile { background: #e8b536; }
+.custom-tile { background: #f2f0e8; }
+.quick-tile-icon { width: 64px; height: 64px; display: grid; place-items: center; border: 1px solid #1733292b; background: #ffffff38; }
+.quick-tile-icon svg { width: 29px; }
+.quick-tile > span:nth-child(2) { display: grid; }
+.quick-tile small, .challenges-copy small { color: #315c4c; font-size: 0.67rem; }
+.quick-tile strong { font-size: 1.15rem; }
+.quick-tile p, .challenges-copy p { margin: 3px 0 0; color: #405e53; font-size: 0.72rem; }
+.quick-arrow { width: 20px; }
+.challenges-banner { grid-column: 2 / 4; display: grid; grid-template-columns: auto 1fr auto; grid-template-rows: 1fr auto; align-items: center; gap: 12px 22px; padding: 24px 28px; background: linear-gradient(115deg, #16694f, #0d4a3a); color: #fff; }
+.challenges-banner::after { content: ''; position: absolute; left: -40px; top: -80px; width: 260px; height: 260px; border: 42px solid #ffffff0b; border-radius: 50%; }
+.challenges-mark { width: 78px; height: 78px; display: grid; place-items: center; border: 1px solid #ffffff2b; background: #ffffff13; color: #ffc454; transform: skewX(-6deg); }
+.challenges-mark svg { width: 38px; height: 38px; fill: currentColor; }
+.challenges-copy { display: grid; }
+.challenges-copy small { color: #9fd4c1; }
+.challenges-copy strong { font-size: clamp(1.25rem, 2vw, 1.7rem); }
+.challenges-copy p { color: #b8d4ca; }
+.challenges-count { display: grid; justify-items: center; padding: 0 20px; border-right: 1px solid #ffffff21; }
+.challenges-count b { font: 700 2.5rem var(--font-geist-mono); color: #ffc454; line-height: 1; }
+.challenges-count small { color: #9fc3b6; font-size: 0.65rem; }
+.challenges-banner .tile-enter { grid-column: 1 / -1; color: #ffc454; }
+.game-menu-footer { display: flex; justify-content: space-between; align-items: center; padding: 0 clamp(18px, 5vw, 72px); border-top: 1px solid #ffffff12; background: #071c17a8; color: #829b90; font-size: 0.68rem; }
+.game-menu-footer span:first-child { display: flex; align-items: center; gap: 7px; }
+.game-menu-footer i { width: 7px; height: 7px; border-radius: 50%; background: #e8b536; box-shadow: 0 0 0 4px #e8b5361c; }
+.challenge-menu { padding-top: 34px; }
+.challenge-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 9px; }
+.challenge-tile { position: relative; min-height: 230px; overflow: hidden; display: grid; align-content: end; gap: 10px; padding: 24px; border: 0; border-radius: 3px; font-family: inherit; text-align: right; }
+button.challenge-tile { cursor: pointer; transition: transform 140ms ease, box-shadow 140ms ease; }
+button.challenge-tile:hover { z-index: 2; transform: scale(1.018); box-shadow: 0 14px 36px #0006; outline: 3px solid #fff; outline-offset: -3px; }
+.challenge-tile-live { grid-column: span 2; min-height: 350px; grid-template-columns: 1fr auto; background: linear-gradient(135deg, #f1bd40, #dd9229); color: #18352b; }
+.challenge-visual { position: absolute; left: 8%; top: 16%; width: 160px; height: 160px; display: grid; place-items: center; color: #173329; opacity: 0.88; }
+.challenge-visual > svg { width: 140px; height: 140px; stroke-width: 1.1; }
+.challenge-visual i { position: absolute; display: grid; place-items: center; width: 60px; height: 60px; border-radius: 50%; background: #173329; color: #ffb441; }
+.challenge-visual i svg { width: 27px; fill: currentColor; }
+.challenge-copy { position: relative; z-index: 1; display: grid; align-self: end; }
+.challenge-copy small { color: inherit; opacity: 0.7; font-size: 0.7rem; font-weight: 800; }
+.challenge-copy strong { font-size: 1.45rem; }
+.challenge-copy p { max-width: 270px; margin: 5px 0 0; color: inherit; opacity: 0.72; font-size: 0.76rem; }
+.challenge-tile-live .tile-enter { position: relative; z-index: 1; grid-column: 1 / -1; color: #173329; }
+.challenge-tile-locked { background: #e9ece8; color: #53645d; border: 1px solid #ffffff55; }
+.locked-icon { position: absolute; left: 20px; top: 20px; color: #789087; opacity: 0.25; }
+.locked-icon svg { width: 65px; height: 65px; }
+.coming-label { width: fit-content; display: flex; align-items: center; gap: 6px; margin-top: 4px; padding: 5px 8px; background: #d1d8d4; color: #60716a; font-size: 0.66rem; font-weight: 700; }
+.coming-label svg { width: 12px; }
+
+@media (max-width: 850px) {
+  .game-menu-shell { grid-template-rows: 64px 1fr 40px; }
+  .home-menu { padding-top: 14px; }
+  .game-tile-grid { grid-template-columns: 1fr 1fr; grid-template-rows: 330px 150px 190px; min-height: 0; }
+  .journey-tile { grid-column: 1 / -1; grid-row: auto; grid-template-columns: auto 1fr; grid-template-rows: 1fr auto auto; }
+  .journey-emblem { grid-row: 1 / 3; }
+  .journey-tile .tile-enter { grid-column: 1 / -1; }
+  .challenges-banner { grid-column: 1 / -1; }
+  .challenge-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .challenge-tile-live { grid-column: 1 / -1; }
+}
+@media (max-width: 560px) {
+  .game-menu-header { padding-inline: 12px; }
+  .menu-brand div { display: none; }
+  .player-strip > span { padding-inline: 10px; font-size: 0.7rem; }
+  .home-menu, .challenge-menu { width: calc(100% - 18px); }
+  .game-tabs { width: 100%; }
+  .game-tabs button { flex: 1; min-width: 0; padding-inline: 8px; }
+  .home-menu-heading { display: grid; }
+  .home-menu-heading p { display: none; }
+  .game-tile-grid { display: grid; grid-template-columns: 1fr; grid-template-rows: 340px 135px 135px 190px; }
+  .journey-tile { grid-column: auto; display: grid; grid-template-columns: 94px 1fr; padding-inline: 18px; }
+  .journey-emblem { width: 86px; height: 86px; }
+  .journey-emblem span { font-size: 3.2rem; }
+  .quick-tile { padding: 16px; }
+  .quick-tile-icon { width: 52px; height: 52px; }
+  .challenges-banner { grid-column: auto; grid-template-columns: auto 1fr; padding: 18px; }
+  .challenges-mark { width: 58px; height: 58px; }
+  .challenges-count { display: none; }
+  .game-menu-footer span:last-child { display: none; }
+  .challenge-grid { grid-template-columns: 1fr; }
+  .challenge-tile-live { grid-column: auto; min-height: 300px; }
+  .challenge-visual { width: 110px; height: 110px; }
+  .challenge-visual > svg { width: 100px; height: 100px; }
+  .menu-section-heading { align-items: center; }
+}
 .top-mode-selector {
   display: flex;
   align-items: center;
